@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
+    "check": "biome check --write",
     "prepare": "husky"
   },
   "dependencies": {
@@ -29,6 +30,7 @@
     "@tiptap/pm": "^3.22.3",
     "@tiptap/react": "^3.22.3",
     "@tiptap/starter-kit": "^3.22.3",
+    "biome": "^0.3.3",
     "dayjs": "^1.11.20",
     "embla-carousel": "^8.5.2",
     "embla-carousel-react": "^8.5.2",
