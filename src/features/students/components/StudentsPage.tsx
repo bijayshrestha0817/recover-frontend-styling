@@ -1,8 +1,8 @@
 "use client";
-import { TableComponent } from "@/components/common/TableComponent";
 import { Group, Pagination, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import { TableComponent } from "@/components/common/TableComponent";
 
 interface Course {
   id: number;
