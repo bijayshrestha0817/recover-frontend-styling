@@ -15,8 +15,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { MantineLogo } from "@mantinex/mantine-logo";
 import { IconChevronDown } from "@tabler/icons-react";
 import Link from "next/link";
-import classes from "../../styles/Header.module.css";
 import type { LinkItem } from "@/types/IHeader";
+import classes from "../../styles/Header.module.css";
 
 const links: LinkItem[] = [
   { link: "/Students", label: "Students" },
