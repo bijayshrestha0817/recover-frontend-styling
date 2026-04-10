@@ -66,31 +66,46 @@ export function TableComponent<T extends Record<string, unknown>>({
         </Table.Thead>
 
         <Table.Tbody>
-          {loading ? (
-            <Table.Tr>
-              <Table.Td colSpan={columns.length}>
-                <Text ta="center">Loading...</Text>
-              </Table.Td>
-            </Table.Tr>
-          ) : data.length > 0 ? (
+          {data.length > 0 ? (
             data.map((row) => (
-              <Table.Tr key={JSON.stringify(row)}>
+              <Table.Tr key={row.id as number}>
                 {columns.map((col) => {
                   const cellValue = row[col.key];
-                  return (
-                    <Table.Td key={String(col.key)}>
-                      {cellValue !== null && cellValue !== undefined
+
+                  let displayValue: React.ReactNode = "";
+
+                  if (typeof cellValue === "object" && cellValue !== null) {
+                    if ("course_name" in cellValue) {
+                      displayValue = (cellValue as { course_name: string })
+                        .course_name;
+                    } else {
+                      displayValue = JSON.stringify(cellValue);
+                    }
+                  } else {
+                    displayValue =
+                      cellValue !== null && cellValue !== undefined
                         ? String(cellValue)
-                        : ""}
-                    </Table.Td>
+                        : "";
+                  }
+
+                  return (
+                    <Table.Td key={String(col.key)}>{displayValue}</Table.Td>
                   );
                 })}
               </Table.Tr>
             ))
-          ) : (
+          ) : !loading ? (
             <Table.Tr>
               <Table.Td colSpan={columns.length}>
                 <Text ta="center">No data found</Text>
+              </Table.Td>
+            </Table.Tr>
+          ) : null}
+
+          {loading && (
+            <Table.Tr>
+              <Table.Td colSpan={columns.length}>
+                <Text ta="center">Fetching...</Text>
               </Table.Td>
             </Table.Tr>
           )}
