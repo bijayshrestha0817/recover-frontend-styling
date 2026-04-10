@@ -1,7 +1,11 @@
+import { Header } from "@/components/layouts/Header";
+import { HomePage } from "@/features/dashboard/components/HomePage";
+
 export default function Home() {
   return (
-    <div>
-      <p>Home</p>
-    </div>
+    <>
+      <Header />
+      <HomePage />
+    </>
   );
 }
