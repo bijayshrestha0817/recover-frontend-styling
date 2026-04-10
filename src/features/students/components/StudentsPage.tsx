@@ -1,9 +1,9 @@
 "use client";
-import LoaderComponent from "@/components/common/LoaderComponent";
-import { TableComponent } from "@/components/common/TableComponent";
 import { Group, Pagination, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import LoaderComponent from "@/components/common/LoaderComponent";
+import { TableComponent } from "@/components/common/TableComponent";
 
 interface Course {
   id: number;
@@ -65,23 +65,23 @@ export default function StudentsPage() {
           leftSection={<IconSearch size={16} />}
         />
       </Group>
-      {loading ?(
-      <LoaderComponent />
-      ):(
-      <TableComponent
-        data={data}
-        columns={[
-          { key: "id", label: "ID" },
-          { key: "name", label: "Name" },
-          { key: "email", label: "Email" },
-          { key: "age", label: "Age" },
-          { key: "course_name", label: "Course" },
-        ]}
-        onSort={handleSort}
-        sortBy={sortBy}
-        reversed={reversed}
-        loading={loading}
-      />
+      {loading ? (
+        <LoaderComponent />
+      ) : (
+        <TableComponent
+          data={data}
+          columns={[
+            { key: "id", label: "ID" },
+            { key: "name", label: "Name" },
+            { key: "email", label: "Email" },
+            { key: "age", label: "Age" },
+            { key: "course_name", label: "Course" },
+          ]}
+          onSort={handleSort}
+          sortBy={sortBy}
+          reversed={reversed}
+          loading={loading}
+        />
       )}
       <div className="fixed bottom-8">
         <Pagination
