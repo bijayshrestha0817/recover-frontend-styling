@@ -1,5 +1,4 @@
 "use client";
-import type { LinkItem } from "@/types/IHeader";
 import {
   Burger,
   Center,
@@ -16,6 +15,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { MantineLogo } from "@mantinex/mantine-logo";
 import { IconChevronDown } from "@tabler/icons-react";
 import Link from "next/link";
+import type { LinkItem } from "@/types/IHeader";
 import classes from "../../styles/Header.module.css";
 
 const links: LinkItem[] = [

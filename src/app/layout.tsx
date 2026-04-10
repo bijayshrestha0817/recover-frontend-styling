@@ -1,7 +1,7 @@
-import { Header } from "@/components/layouts/Header";
-import { theme } from "@/constants/theme";
 import { MantineProvider, mantineHtmlProps } from "@mantine/core";
 import type { Metadata } from "next";
+import { Header } from "@/components/layouts/Header";
+import { theme } from "@/constants/theme";
 import "../styles/globals.css";
 
 export const metadata: Metadata = {

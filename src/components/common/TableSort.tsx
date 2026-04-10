@@ -1,7 +1,5 @@
 "use client";
 
-import { DemoData } from "@/constants/students";
-import classes from "@/styles/TableSort.module.css";
 import {
   Center,
   Group,
@@ -19,6 +17,8 @@ import {
   IconSelector,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { DemoData } from "@/constants/students";
+import classes from "@/styles/TableSort.module.css";
 
 interface RowData {
   name: string;
@@ -116,7 +116,7 @@ export function TableSort() {
     <Table.Tr key={row.email}>
       <Table.Td>{row.name}</Table.Td>
       <Table.Td>{row.email}</Table.Td>
-      <Table.Td>{row.company }</Table.Td>
+      <Table.Td>{row.company}</Table.Td>
     </Table.Tr>
   ));
 
