@@ -28,7 +28,7 @@ interface Props<T> {
   loading?: boolean;
 }
 
-export function TableComponent<T extends Record<string, any>>({
+export function TableComponent<T extends Record<string, unknown>>({
   data,
   columns,
   onSort,
@@ -75,9 +75,16 @@ export function TableComponent<T extends Record<string, any>>({
           ) : data.length > 0 ? (
             data.map((row) => (
               <Table.Tr key={JSON.stringify(row)}>
-                {columns.map((col) => (
-                  <Table.Td key={String(col.key)}>{row[col.key]}</Table.Td>
-                ))}
+                {columns.map((col) => {
+                  const cellValue = row[col.key];
+                  return (
+                    <Table.Td key={String(col.key)}>
+                      {cellValue !== null && cellValue !== undefined
+                        ? String(cellValue)
+                        : ""}
+                    </Table.Td>
+                  );
+                })}
               </Table.Tr>
             ))
           ) : (
