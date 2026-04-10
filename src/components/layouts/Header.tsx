@@ -1,4 +1,5 @@
 "use client";
+import type { LinkItem } from "@/types/IHeader";
 import {
   Burger,
   Center,
@@ -15,12 +16,12 @@ import { useDisclosure } from "@mantine/hooks";
 import { MantineLogo } from "@mantinex/mantine-logo";
 import { IconChevronDown } from "@tabler/icons-react";
 import Link from "next/link";
-import type { LinkItem } from "@/types/IHeader";
 import classes from "../../styles/Header.module.css";
 
 const links: LinkItem[] = [
-  { link: "/Students", label: "Students" },
-  { link: "/Courses", label: "Courses" },
+  { link: "/students", label: "Students" },
+  { link: "/courses", label: "Courses" },
+  { link: "/login", label: "Auth" },
 ];
 
 export function Header() {
@@ -67,7 +68,9 @@ export function Header() {
     <header className={classes.header}>
       <Container size="md">
         <div className={classes.inner}>
-          <MantineLogo size={28} />
+          <Link href="/">
+            <MantineLogo size={28} />
+          </Link>
           <Group gap={5} visibleFrom="sm">
             {items}
           </Group>

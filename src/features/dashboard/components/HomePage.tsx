@@ -10,7 +10,7 @@ export function HomePage() {
         zIndex={0}
       />
       <Container className={classes.container} size="md">
-        <Title className={classes.title}>A fully featured Student System</Title>
+        <Title className={classes.title}>Student System with Courses and simple JWT authentication </Title>
 
         <Button
           variant="gradient"

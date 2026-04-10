@@ -1,6 +1,7 @@
+import { Header } from "@/components/layouts/Header";
+import { theme } from "@/constants/theme";
 import { MantineProvider, mantineHtmlProps } from "@mantine/core";
 import type { Metadata } from "next";
-import { theme } from "@/constants/theme";
 import "../styles/globals.css";
 
 export const metadata: Metadata = {
@@ -17,7 +18,10 @@ export default function RootLayout({
     <html lang="en" {...mantineHtmlProps}>
       <head></head>
       <body className={`demo antialiased`}>
-        <MantineProvider theme={theme}>{children}</MantineProvider>
+        <MantineProvider theme={theme}>
+          <Header />
+          <main style={{ paddingTop: "56px" }}>{children}</main>
+        </MantineProvider>
       </body>
     </html>
   );
