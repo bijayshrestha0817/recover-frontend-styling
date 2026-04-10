@@ -46,7 +46,7 @@ export function TableComponent<T extends Record<string, unknown>>({
   };
 
   return (
-    <ScrollArea h={400}>
+    <ScrollArea h={600}>
       <Table stickyHeader>
         <Table.Thead>
           <Table.Tr>
