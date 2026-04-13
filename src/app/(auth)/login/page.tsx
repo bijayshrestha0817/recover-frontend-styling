@@ -1,6 +1,5 @@
 "use client";
 
-import { AuthService } from "@/features/auth/services/authAPI";
 import {
   Anchor,
   Button,
@@ -19,6 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AuthService } from "@/features/auth/services/authAPI";
 import classes from "../../../styles/AuthenticationTitle.module.css";
 
 const { login } = AuthService();

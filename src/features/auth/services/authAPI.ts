@@ -13,7 +13,8 @@ const AUTH_URL = wretch(API_AUTH_URL)
   .accept("application/json")
   .content("application/json");
 
-const register = (email: string, username: string, password: string) => {he
+const register = (email: string, username: string, password: string) => {
+  he;
   return API_URL.post({ email, username, password }, "/auth/users/");
 };
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { AuthService } from "@/features/auth/services/authAPI";
 import {
   Button,
   Container,
@@ -15,6 +14,7 @@ import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AuthService } from "@/features/auth/services/authAPI";
 
 const { register } = AuthService();
 
@@ -45,7 +45,7 @@ export default function RegisterPage() {
 
     try {
       await register(values.email, values.username, values.password);
-      toast.success("Registration successful! Please log in.",);
+      toast.success("Registration successful! Please log in.");
       router.push("/login");
     } catch (err) {
       console.error(err);

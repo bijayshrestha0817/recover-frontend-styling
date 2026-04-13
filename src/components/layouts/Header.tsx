@@ -23,7 +23,7 @@ const links: LinkItem[] = [
   { link: "/courses", label: "Courses" },
 
   // hide the login rout if login already
-    { link: "/login", label: "Login" },
+  { link: "/login", label: "Login" },
 ];
 
 export function Header() {

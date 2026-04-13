@@ -1,10 +1,10 @@
+import { MantineProvider, mantineHtmlProps } from "@mantine/core";
+import type { Metadata } from "next";
+import { Geist } from "next/font/google";
 import { Header } from "@/components/layouts/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { theme } from "@/constants/theme";
 import { cn } from "@/lib/utils";
-import { MantineProvider, mantineHtmlProps } from "@mantine/core";
-import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import "../styles/globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
