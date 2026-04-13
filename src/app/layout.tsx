@@ -1,8 +1,13 @@
+import { Header } from "@/components/layouts/Header";
+import { Toaster } from "@/components/ui/sonner";
+import { theme } from "@/constants/theme";
+import { cn } from "@/lib/utils";
 import { MantineProvider, mantineHtmlProps } from "@mantine/core";
 import type { Metadata } from "next";
-import { Header } from "@/components/layouts/Header";
-import { theme } from "@/constants/theme";
+import { Geist } from "next/font/google";
 import "../styles/globals.css";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "MedReserve",
@@ -15,12 +20,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" {...mantineHtmlProps}>
+    <html
+      lang="en"
+      {...mantineHtmlProps}
+      className={cn("font-sans", geist.variable)}
+    >
       <head></head>
       <body className={`demo antialiased`}>
         <MantineProvider theme={theme}>
           <Header />
-          <main style={{ paddingTop: "56px" }}>{children}</main>
+          <main style={{ paddingTop: "56px" }}>
+            {children}
+            <Toaster richColors />
+          </main>
         </MantineProvider>
       </body>
     </html>

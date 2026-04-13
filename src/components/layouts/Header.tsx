@@ -21,7 +21,9 @@ import classes from "../../styles/Header.module.css";
 const links: LinkItem[] = [
   { link: "/students", label: "Students" },
   { link: "/courses", label: "Courses" },
-  { link: "/login", label: "Auth" },
+
+  // hide the login rout if login already
+    { link: "/login", label: "Login" },
 ];
 
 export function Header() {
