@@ -18,11 +18,11 @@ const register = (email: string, username: string, password: string) => {
 };
 
 const login = (username: string, password: string) => {
-  return AUTH_URL.post({ username: username, password }, "token/");
+  return AUTH_URL.post({ username: username, password }, "/auth/token/");
 };
 
 const handleJWTRefresh = (refreshToken: string) => {
-  return AUTH_URL.post({ refresh: refreshToken }, "/token/refresh/");
+  return AUTH_URL.post({ refresh: refreshToken }, "/auth/token/refresh/");
 };
 
 const getToken = (key: "access" | "refresh") => {
