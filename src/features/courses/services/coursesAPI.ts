@@ -1,5 +1,5 @@
-import wretch from "wretch";
 import type { Course } from "@/types/ICourse";
+import wretch from "wretch";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_DJANGO_API_URL;
 
@@ -20,9 +20,19 @@ const POST_COURSE = (data: { name: string }) => {
   return API_URL.url("/courses/").post(data).json<Course>();
 };
 
+const PUT_COURSE = (data: { id: number; name: string }) => {
+  return API_URL.url(`/courses/${data.id}/`).put(data).json<Course>();
+};
+
+const DELETE_COURSE = (data: { id: number }) => {
+  return API_URL.url(`/courses/${data.id}/`).delete();
+};
+
 export const CourseService = () => {
   return {
     GET_COURSES,
     POST_COURSE,
+    PUT_COURSE,
+    DELETE_COURSE,
   };
 };

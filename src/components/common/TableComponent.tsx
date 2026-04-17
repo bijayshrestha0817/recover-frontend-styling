@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Button,
   Center,
   Group,
   ScrollArea,
@@ -50,6 +51,14 @@ export function TableComponent<T extends { id: number }>({
     );
   };
 
+  const handleEdit = (id: number) => {
+    console.log("Edit:", id);
+  };
+
+  const handleDelete = (id: number) => {
+    console.log("Delete:", id);
+  };
+
   return (
     <ScrollArea h={600}>
       <Table stickyHeader>
@@ -69,6 +78,7 @@ export function TableComponent<T extends { id: number }>({
                 </UnstyledButton>
               </Table.Th>
             ))}
+            <Table.Th>Actions</Table.Th>
           </Table.Tr>
         </Table.Thead>
 
@@ -101,6 +111,22 @@ export function TableComponent<T extends { id: number }>({
                     <Table.Td key={String(col.key)}>{displayValue}</Table.Td>
                   );
                 })}
+                <Table.Td className="flex gap-4 mb-0.5">
+                  <Button
+                    type="submit"
+                    color="green"
+                    onClick={() => handleEdit(row.id)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    type="submit"
+                    color="red"
+                    onClick={() => handleDelete(row.id)}
+                  >
+                    Delete
+                  </Button>
+                </Table.Td>
               </Table.Tr>
             ))
           ) : !loading ? (

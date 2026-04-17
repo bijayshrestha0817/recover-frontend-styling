@@ -1,16 +1,14 @@
 "use client";
 
 import { Button, Group } from "@mantine/core";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CourseFormProvider, useCourseForm } from "../hooks/FormContext";
 import { CourseService } from "../services/coursesAPI";
 import { NameInput } from "./NameInput";
 
 const { POST_COURSE } = CourseService();
 export default function CourseForm() {
-  const [loading, setLoading] = useState(false);
-
+  const queryClient = useQueryClient();
   const form = useCourseForm({
     mode: "uncontrolled",
     initialValues: {
@@ -21,16 +19,19 @@ export default function CourseForm() {
     },
   });
 
+  const mutation = useMutation({
+    mutationFn: POST_COURSE,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
+    },
+  });
+
   const onSubmit = async (values: typeof form.values) => {
-    setLoading(true);
     try {
-      await POST_COURSE(values);
-      toast.success("Course created successfully!");
+      await mutation.mutateAsync(values);
       form.reset();
     } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
+      console.log(err);
     }
   };
 
@@ -39,9 +40,7 @@ export default function CourseForm() {
       <form onSubmit={form.onSubmit(onSubmit)}>
         <Group justify="flex-end" mt="md">
           <NameInput />
-          <Button type="submit" loading={loading}>
-            Submit
-          </Button>
+          <Button type="submit">Submit</Button>
         </Group>
       </form>
     </CourseFormProvider>
