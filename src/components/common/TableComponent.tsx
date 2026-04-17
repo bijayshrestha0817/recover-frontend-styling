@@ -22,15 +22,19 @@ interface Column<T> {
 interface Props<T> {
   data: T[];
   columns: Column<T>[];
+  page?: number;
+  limit?: number;
   onSort?: (field: keyof T) => void;
   sortBy?: keyof T | null;
   reversed?: boolean;
   loading?: boolean;
 }
 
-export function TableComponent<T extends Record<string, unknown>>({
+export function TableComponent<T extends { id: number }>({
   data,
   columns,
+  page = 1,
+  limit = 10,
   onSort,
   sortBy,
   reversed,
@@ -50,6 +54,8 @@ export function TableComponent<T extends Record<string, unknown>>({
       <Table stickyHeader>
         <Table.Thead>
           <Table.Tr>
+            <Table.Th>S.N.</Table.Th>
+
             {columns.map((col) => (
               <Table.Th key={String(col.key)}>
                 <UnstyledButton onClick={() => onSort?.(col.key)}>
@@ -67,8 +73,10 @@ export function TableComponent<T extends Record<string, unknown>>({
 
         <Table.Tbody>
           {data.length > 0 ? (
-            data.map((row) => (
-              <Table.Tr key={row.id as number}>
+            data.map((row, index) => (
+              <Table.Tr key={row.id}>
+                <Table.Td>{(page - 1) * limit + index + 1}</Table.Td>
+
                 {columns.map((col) => {
                   const cellValue = row[col.key];
 
@@ -96,7 +104,7 @@ export function TableComponent<T extends Record<string, unknown>>({
             ))
           ) : !loading ? (
             <Table.Tr>
-              <Table.Td colSpan={columns.length}>
+              <Table.Td colSpan={columns.length + 1}>
                 <Text ta="center">No data found</Text>
               </Table.Td>
             </Table.Tr>
@@ -104,7 +112,7 @@ export function TableComponent<T extends Record<string, unknown>>({
 
           {loading && (
             <Table.Tr>
-              <Table.Td colSpan={columns.length}>
+              <Table.Td colSpan={columns.length + 1}>
                 <Text ta="center">Fetching...</Text>
               </Table.Td>
             </Table.Tr>

@@ -1,20 +1,18 @@
 "use client";
-import { Group, Pagination, TextInput } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+
 import { TableComponent } from "@/components/common/TableComponent";
+import { Group, Pagination } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { CourseService } from "../services/coursesAPI";
+import CourseForm from "./CourseForm";
 
 interface Course extends Record<string, unknown> {
   id: number;
   name: string;
 }
-// interface Student extends Record<string, unknown> {
-//   id: number;
-//   name: string;
-//   email: string;
-//   course: Course;
-//   age: number;
-// }
+
+const { GET_COURSES } = CourseService();
+
 export default function CoursesPage() {
   const [data, setData] = useState<Course[]>([]);
   const [page, setPage] = useState(1);
@@ -28,22 +26,19 @@ export default function CoursesPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(
-          `http://127.0.0.1:8000/api/v1/course-list/?page=${page}&ordering=${reversed ? "-" : ""}${sortBy ?? ""}`,
-        );
+        const res = await GET_COURSES(page);
 
-        const json = await res.json();
-        setData(json.results);
-        setTotal(json.count);
+        setData(res.results);
+        setTotal(res.count);
       } catch (error) {
-        console.error(error);
+        console.error("Failed to fetch courses:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [page, sortBy, reversed]);
+  }, [page]);
 
   const handleSort = (field: keyof Course) => {
     if (sortBy === field) {
@@ -59,25 +54,23 @@ export default function CoursesPage() {
   return (
     <>
       <Group justify="flex-end" mb="md">
-        <TextInput
-          placeholder="Search..."
-          leftSection={<IconSearch size={16} />}
-        />
+        <CourseForm />
       </Group>
 
       <TableComponent
         data={data}
         columns={[
-          { key: "id", label: "ID" },
-          { key: "name", label: "Course" },
+          { key: "name", label: "Course Name" },
         ]}
         onSort={handleSort}
         sortBy={sortBy}
         reversed={reversed}
         loading={loading}
+        page={page}
+        limit={pageSize}
       />
 
-      <div className="fixed bottom-8">
+      <div className="fixed bottom-6">
         <Pagination
           value={page}
           onChange={setPage}
