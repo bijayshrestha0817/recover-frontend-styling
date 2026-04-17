@@ -1,8 +1,8 @@
 "use client";
 
-import { TableComponent } from "@/components/common/TableComponent";
 import { Group, Pagination } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { TableComponent } from "@/components/common/TableComponent";
 import { CourseService } from "../services/coursesAPI";
 import CourseForm from "./CourseForm";
 
@@ -59,9 +59,7 @@ export default function CoursesPage() {
 
       <TableComponent
         data={data}
-        columns={[
-          { key: "name", label: "Course Name" },
-        ]}
+        columns={[{ key: "name", label: "Course Name" }]}
         onSort={handleSort}
         sortBy={sortBy}
         reversed={reversed}

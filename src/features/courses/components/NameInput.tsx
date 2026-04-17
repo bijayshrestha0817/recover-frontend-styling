@@ -1,4 +1,3 @@
-
 import { TextInput } from "@mantine/core";
 import { useCourseFormContext } from "../hooks/FormContext";
 

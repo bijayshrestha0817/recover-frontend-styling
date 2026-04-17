@@ -1,5 +1,5 @@
-import { useCourseFormContext } from "@/features/courses/hooks/FormContext";
 import { TextInput } from "@mantine/core";
+import { useCourseFormContext } from "@/features/courses/hooks/FormContext";
 
 export function NameInput() {
   const form = useCourseFormContext();
