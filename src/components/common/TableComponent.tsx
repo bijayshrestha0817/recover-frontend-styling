@@ -13,6 +13,7 @@ import {
   IconChevronUp,
   IconSelector,
 } from "@tabler/icons-react";
+import LoaderComponent from "./LoaderComponent";
 
 interface Column<T> {
   key: keyof T;
@@ -113,7 +114,8 @@ export function TableComponent<T extends { id: number }>({
           {loading && (
             <Table.Tr>
               <Table.Td colSpan={columns.length + 1}>
-                <Text ta="center">Fetching...</Text>
+                <LoaderComponent/>
+                {/* <Text ta="center"></Text> */}
               </Table.Td>
             </Table.Tr>
           )}

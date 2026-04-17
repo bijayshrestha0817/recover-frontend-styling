@@ -1,55 +1,25 @@
 "use client";
 
-import { Group, Pagination } from "@mantine/core";
-import { useEffect, useState } from "react";
 import { TableComponent } from "@/components/common/TableComponent";
+import { Group, Pagination } from "@mantine/core";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { CourseService } from "../services/coursesAPI";
 import CourseForm from "./CourseForm";
-
-interface Course extends Record<string, unknown> {
-  id: number;
-  name: string;
-}
 
 const { GET_COURSES } = CourseService();
 
 export default function CoursesPage() {
-  const [data, setData] = useState<Course[]>([]);
   const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
-  // const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<keyof Course | null>(null);
-  const [reversed, setReversed] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const limit = 15;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await GET_COURSES(page);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["courses", page],
+    queryFn: () => GET_COURSES(page),
+  });
 
-        setData(res.results);
-        setTotal(res.count);
-      } catch (error) {
-        console.error("Failed to fetch courses:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [page]);
-
-  const handleSort = (field: keyof Course) => {
-    if (sortBy === field) {
-      setReversed(!reversed);
-    } else {
-      setSortBy(field);
-      setReversed(false);
-    }
-  };
-
-  const pageSize = 15;
+  const courses = data?.results ?? [];
+  const total = data?.count ?? 0;
 
   return (
     <>
@@ -57,22 +27,21 @@ export default function CoursesPage() {
         <CourseForm />
       </Group>
 
+      {isError && <div>Failed to load courses</div>}
+
       <TableComponent
-        data={data}
+        data={courses}
         columns={[{ key: "name", label: "Course Name" }]}
-        onSort={handleSort}
-        sortBy={sortBy}
-        reversed={reversed}
-        loading={loading}
         page={page}
-        limit={pageSize}
+        limit={limit}
+        loading={isLoading}
       />
 
       <div className="fixed bottom-6">
         <Pagination
           value={page}
           onChange={setPage}
-          total={Math.ceil(total / pageSize)}
+          total={Math.ceil(total / limit)}
           mt="md"
           withEdges
         />
