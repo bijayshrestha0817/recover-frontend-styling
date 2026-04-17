@@ -1,10 +1,11 @@
-import { MantineProvider, mantineHtmlProps } from "@mantine/core";
-import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import { Header } from "@/components/layouts/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { theme } from "@/constants/theme";
 import { cn } from "@/lib/utils";
+import QueryProvider from "@/providers/QueryProvider";
+import { MantineProvider, mantineHtmlProps } from "@mantine/core";
+import type { Metadata } from "next";
+import { Geist } from "next/font/google";
 import "../styles/globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -27,13 +28,15 @@ export default function RootLayout({
     >
       <head></head>
       <body className={`demo antialiased`}>
-        <MantineProvider theme={theme}>
-          <Header />
-          <main style={{ paddingTop: "56px" }}>
-            {children}
-            <Toaster richColors />
-          </main>
-        </MantineProvider>
+        <QueryProvider>
+          <MantineProvider theme={theme}>
+            <Header />
+            <main style={{ paddingTop: "56px" }}>
+              {children}
+              <Toaster richColors />
+            </main>
+          </MantineProvider>
+        </QueryProvider>
       </body>
     </html>
   );
