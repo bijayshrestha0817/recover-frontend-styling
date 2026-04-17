@@ -1,5 +1,5 @@
-import type { Course } from "@/types/ICourse";
 import wretch from "wretch";
+import type { Course } from "@/types/ICourse";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_DJANGO_API_URL;
 
