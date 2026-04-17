@@ -114,7 +114,7 @@ export function TableComponent<T extends { id: number }>({
           {loading && (
             <Table.Tr>
               <Table.Td colSpan={columns.length + 1}>
-                <LoaderComponent/>
+                <LoaderComponent />
                 {/* <Text ta="center"></Text> */}
               </Table.Td>
             </Table.Tr>
