@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Button,
   Center,
   Group,
   ScrollArea,
@@ -19,6 +18,7 @@ import LoaderComponent from "./LoaderComponent";
 interface Column<T> {
   key: keyof T;
   label: string;
+  render?: (row: T) => React.ReactNode;
 }
 
 interface Props<T> {
@@ -30,6 +30,7 @@ interface Props<T> {
   sortBy?: keyof T | null;
   reversed?: boolean;
   loading?: boolean;
+  renderActions?: (row: T) => React.ReactNode;
 }
 
 export function TableComponent<T extends { id: number }>({
@@ -41,6 +42,7 @@ export function TableComponent<T extends { id: number }>({
   sortBy,
   reversed,
   loading,
+  renderActions,
 }: Props<T>) {
   const getIcon = (field: keyof T) => {
     if (sortBy !== field) return <IconSelector size={16} />;
@@ -49,14 +51,6 @@ export function TableComponent<T extends { id: number }>({
     ) : (
       <IconChevronDown size={16} />
     );
-  };
-
-  const handleEdit = (id: number) => {
-    console.log("Edit:", id);
-  };
-
-  const handleDelete = (id: number) => {
-    console.log("Delete:", id);
   };
 
   return (
@@ -78,7 +72,7 @@ export function TableComponent<T extends { id: number }>({
                 </UnstyledButton>
               </Table.Th>
             ))}
-            <Table.Th>Actions</Table.Th>
+            {renderActions && <Table.Th>Actions</Table.Th>}
           </Table.Tr>
         </Table.Thead>
 
@@ -88,45 +82,13 @@ export function TableComponent<T extends { id: number }>({
               <Table.Tr key={row.id}>
                 <Table.Td>{(page - 1) * limit + index + 1}</Table.Td>
 
-                {columns.map((col) => {
-                  const cellValue = row[col.key];
+                {columns.map((col) => (
+                  <Table.Td key={String(col.key)}>
+                    {col.render ? col.render(row) : String(row[col.key] ?? "")}
+                  </Table.Td>
+                ))}
 
-                  let displayValue: React.ReactNode = "";
-
-                  if (typeof cellValue === "object" && cellValue !== null) {
-                    if ("course_name" in cellValue) {
-                      displayValue = (cellValue as { course_name: string })
-                        .course_name;
-                    } else {
-                      displayValue = JSON.stringify(cellValue);
-                    }
-                  } else {
-                    displayValue =
-                      cellValue !== null && cellValue !== undefined
-                        ? String(cellValue)
-                        : "";
-                  }
-
-                  return (
-                    <Table.Td key={String(col.key)}>{displayValue}</Table.Td>
-                  );
-                })}
-                <Table.Td className="flex gap-4 mb-0.5">
-                  <Button
-                    type="submit"
-                    color="green"
-                    onClick={() => handleEdit(row.id)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    type="submit"
-                    color="red"
-                    onClick={() => handleDelete(row.id)}
-                  >
-                    Delete
-                  </Button>
-                </Table.Td>
+                {renderActions && <Table.Td>{renderActions(row)}</Table.Td>}
               </Table.Tr>
             ))
           ) : !loading ? (
@@ -139,9 +101,8 @@ export function TableComponent<T extends { id: number }>({
 
           {loading && (
             <Table.Tr>
-              <Table.Td colSpan={columns.length + 1}>
+              <Table.Td colSpan={columns.length + 3}>
                 <LoaderComponent />
-                {/* <Text ta="center"></Text> */}
               </Table.Td>
             </Table.Tr>
           )}

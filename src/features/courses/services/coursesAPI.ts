@@ -20,19 +20,19 @@ const POST_COURSE = (data: { name: string }) => {
   return API_URL.url("/courses/").post(data).json<Course>();
 };
 
-const PUT_COURSE = (data: { id: number; name: string }) => {
+const UPDATE_COURSE = (data: { id: number; name: string }) => {
   return API_URL.url(`/courses/${data.id}/`).put(data).json<Course>();
 };
 
 const DELETE_COURSE = (data: { id: number }) => {
-  return API_URL.url(`/courses/${data.id}/`).delete();
+  return API_URL.url(`/courses/${data.id}/`).delete().res();
 };
 
 export const CourseService = () => {
   return {
     GET_COURSES,
     POST_COURSE,
-    PUT_COURSE,
+    UPDATE_COURSE,
     DELETE_COURSE,
   };
 };

@@ -1,17 +1,26 @@
 "use client";
 
-import { Group, Pagination } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import { TableComponent } from "@/components/common/TableComponent";
+import type { Course } from "@/types/ICourse";
+import { Button, Group, Pagination } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { CourseService } from "../services/coursesAPI";
 import CourseForm from "./CourseForm";
+import { EditCourseModal } from "./EditCourseModal"; 
 
 const { GET_COURSES } = CourseService();
 
 export default function CoursesPage() {
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+
+  const [editOpened, editHandlers] = useDisclosure(false);
+  const [deleteOpened, deleteHandlers] = useDisclosure(false);
+
+
   const [page, setPage] = useState(1);
-  const limit = 15;
+  const limit = 10;
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["courses", page],
@@ -29,12 +38,43 @@ export default function CoursesPage() {
 
       {isError && <div>Failed to load courses</div>}
 
-      <TableComponent
+      <TableComponent<Course>
         data={courses}
         columns={[{ key: "name", label: "Course Name" }]}
         page={page}
-        limit={limit}
+        limit={10}
         loading={isLoading}
+        renderActions={(row: Course) => (
+          <Group gap="xs">
+            <Button
+              size="xs"
+              onClick={() => {
+                setSelectedCourse(row);
+                editHandlers.open(); // ✅ opens modal
+              }}
+            >
+              Edit
+            </Button>
+
+            <Button
+              size="xs"
+              color="red"
+              onClick={() => {
+                setSelectedCourse(row);
+                deleteHandlers.open();
+              }}
+            >
+              Delete
+            </Button>
+          </Group>
+        )}
+      />
+
+      {/* ✅ FIX: Render modal here */}
+      <EditCourseModal
+        opened={editOpened}
+        close={editHandlers.close}
+        course={selectedCourse}
       />
 
       <div className="fixed bottom-6">
