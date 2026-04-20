@@ -1,14 +1,14 @@
 "use client";
 
-import { TableComponent } from "@/components/common/TableComponent";
-import type { Course } from "@/types/ICourse";
 import { Button, Group, Pagination } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { TableComponent } from "@/components/common/TableComponent";
+import type { Course } from "@/types/ICourse";
 import { CourseService } from "../services/coursesAPI";
 import CourseForm from "./CourseForm";
-import { EditCourseModal } from "./EditCourseModal"; 
+import { EditCourseModal } from "./EditCourseModal";
 
 const { GET_COURSES } = CourseService();
 
@@ -17,7 +17,6 @@ export default function CoursesPage() {
 
   const [editOpened, editHandlers] = useDisclosure(false);
   const [deleteOpened, deleteHandlers] = useDisclosure(false);
-
 
   const [page, setPage] = useState(1);
   const limit = 10;
