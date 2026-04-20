@@ -1,11 +1,11 @@
 "use client";
 
-import { TableComponent } from "@/components/common/TableComponent";
-import type { Student } from "@/types/IStudent";
 import { Button, Group, Pagination } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { TableComponent } from "@/components/common/TableComponent";
+import type { Student } from "@/types/IStudent";
 import { StudentService } from "../services/studentAPI";
 import { CreateStudentModal } from "./CreateStudentModal";
 
@@ -16,7 +16,7 @@ const StudentsPage = () => {
   const limit = 10;
   const [createOpened, openHandlers] = useDisclosure(false);
 
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  // const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["students", page],
@@ -56,13 +56,15 @@ const StudentsPage = () => {
         page={page}
         limit={limit}
         loading={isLoading}
-        renderActions={(row: Student) => (
+        renderActions={(
+          // row: Student
+        ) => (
           <Group gap="xs">
             <Button
               size="xs"
               color="green"
               onClick={() => {
-                setSelectedStudent(row);
+                // setSelectedStudent(row);
               }}
             >
               Edit
@@ -72,7 +74,7 @@ const StudentsPage = () => {
               size="xs"
               color="red"
               onClick={() => {
-                setSelectedStudent(row);
+                // setSelectedStudent(row);
               }}
             >
               Delete
