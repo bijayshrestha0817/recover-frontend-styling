@@ -8,6 +8,7 @@ interface EditCourseModalProps {
   opened: boolean;
   close: () => void;
   course: Course | null;
+  color?:string
 }
 
 const { UPDATE_COURSE } = CourseService();
@@ -16,6 +17,7 @@ export function EditCourseModal({
   opened,
   close,
   course,
+  color
 }: EditCourseModalProps) {
   const [name, setName] = useState<string>("");
 
@@ -53,7 +55,7 @@ export function EditCourseModal({
       />
 
       <Group justify="flex-end">
-        <Button mt="md" onClick={handleUpdate} loading={mutation.isPending}>
+        <Button mt="md" onClick={handleUpdate} loading={mutation.isPending} color={color}>
           Update
         </Button>
       </Group>

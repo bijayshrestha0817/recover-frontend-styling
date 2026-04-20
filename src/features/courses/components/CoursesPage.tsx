@@ -48,6 +48,7 @@ export default function CoursesPage() {
           <Group gap="xs">
             <Button
               size="xs"
+              color="green"
               onClick={() => {
                 setSelectedCourse(row);
                 editHandlers.open();
@@ -74,11 +75,13 @@ export default function CoursesPage() {
         opened={editOpened}
         close={editHandlers.close}
         course={selectedCourse}
+        color="green"
       />
       <DeleteCourseModal
         opened={deleteOpened}
         close={deleteHandlers.close}
         course={selectedCourse}
+        color="red"
       />
 
       <div className="fixed bottom-6">
