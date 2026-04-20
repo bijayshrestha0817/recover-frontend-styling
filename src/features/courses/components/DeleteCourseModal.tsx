@@ -1,6 +1,6 @@
-import type { Course } from "@/types/ICourse";
 import { Button, Group, Modal, Text } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Course } from "@/types/ICourse";
 import { CourseService } from "../services/coursesAPI";
 
 const { DELETE_COURSE } = CourseService();
