@@ -1,94 +1,99 @@
 "use client";
-import { Group, Pagination, TextInput } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+
 import { TableComponent } from "@/components/common/TableComponent";
+import type { Student } from "@/types/IStudent";
+import { Button, Group, Pagination } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { StudentService } from "../services/studentAPI";
+import { CreateStudentModal } from "./CreateStudentModal";
 
-interface Course {
-  id: number;
-  course_name: string;
-}
-interface Student extends Record<string, unknown> {
-  id: number;
-  name: string;
-  email: string;
-  course: Course;
-  age: number;
-}
-export default function StudentsPage() {
-  const [data, setData] = useState<Student[]>([]);
+const { GET_STUDENTS } = StudentService();
+
+const StudentsPage = () => {
   const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
-  // const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<keyof Student | null>(null);
-  const [reversed, setReversed] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const limit = 10;
+  const [createOpened, openHandlers] = useDisclosure(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `http://127.0.0.1:8000/api/v1/student-list/?page=${page}&ordering=${reversed ? "-" : ""}${sortBy ?? ""}`,
-        );
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
-        const json = await res.json();
-        setData(json.results);
-        setTotal(json.count);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["students", page],
+    queryFn: () => GET_STUDENTS(page),
+  });
 
-    fetchData();
-  }, [page, sortBy, reversed]);
-
-  const handleSort = (field: keyof Student) => {
-    if (sortBy === field) {
-      setReversed(!reversed);
-    } else {
-      setSortBy(field);
-      setReversed(false);
-    }
-  };
-
-  const pageSize = 15;
+  const students = data?.results ?? [];
+  const total = data?.count ?? 0;
 
   return (
     <>
-      <Group justify="flex-end" mb="md">
-        <TextInput
-          placeholder="Search..."
-          leftSection={<IconSearch size={16} />}
-        />
+      <Group justify="flex-end" m="md">
+        <Button
+          color="blue"
+          onClick={() => {
+            openHandlers.open();
+          }}
+          className="rounded-none"
+        >
+          Add Student
+        </Button>
       </Group>
 
-      <TableComponent
-        data={data}
+      {isError && <div>Failed to load students</div>}
+
+      <TableComponent<Student>
+        data={students}
         columns={[
-          { key: "id", label: "ID" },
           { key: "name", label: "Name" },
           { key: "email", label: "Email" },
           { key: "age", label: "Age" },
-          { key: "course_name", label: "Course" },
+          {
+            key: "course_name",
+            label: "Course",
+          },
         ]}
-        onSort={handleSort}
-        sortBy={sortBy}
-        reversed={reversed}
-        loading={loading}
+        page={page}
+        limit={limit}
+        loading={isLoading}
+        renderActions={(row: Student) => (
+          <Group gap="xs">
+            <Button
+              size="xs"
+              color="green"
+              onClick={() => {
+                setSelectedStudent(row);
+              }}
+            >
+              Edit
+            </Button>
+
+            <Button
+              size="xs"
+              color="red"
+              onClick={() => {
+                setSelectedStudent(row);
+              }}
+            >
+              Delete
+            </Button>
+          </Group>
+        )}
       />
 
-      <div className="fixed bottom-8">
+      <CreateStudentModal opened={createOpened} close={openHandlers.close} />
+
+      <div className="fixed bottom-6">
         <Pagination
           value={page}
           onChange={setPage}
-          total={Math.ceil(total / pageSize)}
+          total={Math.ceil(total / limit)}
           mt="md"
           withEdges
         />
       </div>
     </>
   );
-}
+};
+
+export default StudentsPage;
