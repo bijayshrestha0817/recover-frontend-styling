@@ -1,11 +1,11 @@
 "use client";
 
-import { TableComponent } from "@/components/common/TableComponent";
-import type { Course } from "@/types/ICourse";
 import { Button, Group, Pagination } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { TableComponent } from "@/components/common/TableComponent";
+import type { Course } from "@/types/ICourse";
 import { CourseService } from "../services/coursesAPI";
 import CourseForm from "./CourseForm";
 import DeleteCourseModal from "./DeleteCourseModal";
