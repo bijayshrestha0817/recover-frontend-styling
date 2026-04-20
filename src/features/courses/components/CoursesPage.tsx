@@ -1,11 +1,11 @@
 "use client";
 
-import { TableComponent } from "@/components/common/TableComponent";
-import type { Course } from "@/types/ICourse";
 import { Button, Group, Pagination } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { TableComponent } from "@/components/common/TableComponent";
+import type { Course } from "@/types/ICourse";
 import { CourseService } from "../services/coursesAPI";
 import { CreateCourseModal } from "./CreateCourseModal";
 import DeleteCourseModal from "./DeleteCourseModal";
@@ -33,7 +33,7 @@ export default function CoursesPage() {
 
   return (
     <>
-      <Group justify="flex-end" m="md" >
+      <Group justify="flex-end" m="md">
         <Button
           color="blue"
           onClick={() => {
