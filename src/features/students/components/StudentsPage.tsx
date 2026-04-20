@@ -16,7 +16,7 @@ const StudentsPage = () => {
   const limit = 10;
   const [createOpened, openHandlers] = useDisclosure(false);
 
-  const [setSelectedStudent] = useState<Student | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["students", page],
