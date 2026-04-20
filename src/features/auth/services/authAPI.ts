@@ -3,7 +3,6 @@ import wretch from "wretch";
 const API_BASE_URL = process.env.NEXT_PUBLIC_DJANGO_API_URL;
 
 const API_AUTH_URL = process.env.NEXT_PUBLIC_DJANGO_AUTH_API_URL;
-console.log(API_AUTH_URL);
 
 const API_URL = wretch(API_BASE_URL)
   .accept("application/json")

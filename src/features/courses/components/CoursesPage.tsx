@@ -1,13 +1,13 @@
 "use client";
 
+import { TableComponent } from "@/components/common/TableComponent";
+import type { Course } from "@/types/ICourse";
 import { Button, Group, Pagination } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { TableComponent } from "@/components/common/TableComponent";
-import type { Course } from "@/types/ICourse";
 import { CourseService } from "../services/coursesAPI";
-import CourseForm from "./CourseForm";
+import { CreateCourseModal } from "./CreateCourseModal";
 import DeleteCourseModal from "./DeleteCourseModal";
 import { EditCourseModal } from "./EditCourseModal";
 
@@ -18,6 +18,7 @@ export default function CoursesPage() {
 
   const [editOpened, editHandlers] = useDisclosure(false);
   const [deleteOpened, deleteHandlers] = useDisclosure(false);
+  const [createOpened, openHandlers] = useDisclosure(false);
 
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -32,8 +33,16 @@ export default function CoursesPage() {
 
   return (
     <>
-      <Group justify="flex-end" mb="md">
-        <CourseForm />
+      <Group justify="flex-end" m="md" >
+        <Button
+          color="blue"
+          onClick={() => {
+            openHandlers.open();
+          }}
+          className="rounded-none"
+        >
+          Create Course
+        </Button>
       </Group>
 
       {isError && <div>Failed to load courses</div>}
@@ -70,6 +79,8 @@ export default function CoursesPage() {
           </Group>
         )}
       />
+
+      <CreateCourseModal opened={createOpened} close={openHandlers.close} />
 
       <EditCourseModal
         opened={editOpened}
