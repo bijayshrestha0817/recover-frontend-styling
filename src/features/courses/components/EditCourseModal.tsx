@@ -1,13 +1,13 @@
+import type { Course } from "@/types/ICourse";
 import { Button, Group, Modal, TextInput } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import type { Course } from "@/types/ICourse";
 import { CourseService } from "../services/coursesAPI";
 
 interface EditCourseModalProps {
   opened: boolean;
   close: () => void;
-  course: Course;
+  course: Course | null;
 }
 
 const { UPDATE_COURSE } = CourseService();

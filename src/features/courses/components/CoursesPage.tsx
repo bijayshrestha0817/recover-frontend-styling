@@ -1,13 +1,14 @@
 "use client";
 
-import { Button, Group, Pagination } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import { TableComponent } from "@/components/common/TableComponent";
 import type { Course } from "@/types/ICourse";
+import { Button, Group, Pagination } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { CourseService } from "../services/coursesAPI";
 import CourseForm from "./CourseForm";
+import DeleteCourseModal from "./DeleteCourseModal";
 import { EditCourseModal } from "./EditCourseModal";
 
 const { GET_COURSES } = CourseService();
@@ -49,7 +50,7 @@ export default function CoursesPage() {
               size="xs"
               onClick={() => {
                 setSelectedCourse(row);
-                editHandlers.open(); // ✅ opens modal
+                editHandlers.open();
               }}
             >
               Edit
@@ -69,10 +70,14 @@ export default function CoursesPage() {
         )}
       />
 
-      {/* ✅ FIX: Render modal here */}
       <EditCourseModal
         opened={editOpened}
         close={editHandlers.close}
+        course={selectedCourse}
+      />
+      <DeleteCourseModal
+        opened={deleteOpened}
+        close={deleteHandlers.close}
         course={selectedCourse}
       />
 
