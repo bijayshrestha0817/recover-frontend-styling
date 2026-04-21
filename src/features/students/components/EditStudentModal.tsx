@@ -1,5 +1,7 @@
 "use client";
-import { Button, Modal, Stack } from "@mantine/core";
+
+import type { Student } from "@/types/IStudent";
+import { Button, Group, Modal, Stack } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { StudentFormProvider } from "../hooks/FormContext";
 import { useStudentFormLogic } from "../hooks/useStudentFormLogic";
@@ -9,46 +11,69 @@ import { CourseNameInput } from "./CourseNameInput";
 import { EmailInput } from "./EmailInput";
 import { NameInput } from "./NameInput";
 
-interface CreateStudentModalProps {
+interface EditStudentModalProps {
   opened: boolean;
   close: () => void;
+  student: Student | null;
+  color?: string;
 }
 
-const { POST_STUDENT } = StudentService();
+const { UPDATE_STUDENT } = StudentService();
 
-export function CreateStudentModal({ opened, close }: CreateStudentModalProps) {
+export default function EditStudentModal({
+  opened,
+  close,
+  student,
+  color,
+}: EditStudentModalProps) {
   const queryClient = useQueryClient();
 
   const { form, resetForm } = useStudentFormLogic({
-    mode: "create",
+    mode: "edit",
+    student,
+    opened,
   });
 
   const mutation = useMutation({
-    mutationFn: POST_STUDENT,
+    mutationFn: UPDATE_STUDENT,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["students"] });
-      resetForm();
-      close();
+      handleClose();
     },
   });
 
+  const handleClose = () => {
+    resetForm();
+    close();
+  };
+
   const handleSubmit = (values: typeof form.values) => {
-    mutation.mutate(values);
+    if (!student) return;
+
+    mutation.mutate({
+      id: student.id,
+      name: values.name.trim(),
+      email: values.email.trim(),
+      age: values.age,
+      course: values.course,
+    });
   };
 
   return (
-    <Modal opened={opened} onClose={close} title="Add Student" centered>
+    <Modal opened={opened} onClose={handleClose} title="Edit Student" centered>
       <StudentFormProvider form={form}>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
             <NameInput />
-            <AgeInput />
             <EmailInput />
+            <AgeInput />
             <CourseNameInput />
 
-            <Button type="submit" loading={mutation.isPending}>
-              Submit
-            </Button>
+            <Group justify="flex-end" mt="md">
+              <Button type="submit" loading={mutation.isPending} color={color}>
+                Update
+              </Button>
+            </Group>
           </Stack>
         </form>
       </StudentFormProvider>

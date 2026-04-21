@@ -42,7 +42,7 @@ const UPDATE_STUDENT = (data: {
   id: number;
   name: string;
   email: string;
-  age: number;
+  age: number | null;
   course: string;
 }) => {
   return API_URL.url(`/students/${data.id}/`)

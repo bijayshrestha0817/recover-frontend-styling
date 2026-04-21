@@ -4,4 +4,5 @@ export type Student = {
   email: string;
   age: number;
   course_name: string;
+  course?: string;
 };
