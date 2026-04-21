@@ -1,6 +1,6 @@
 "use client";
-import type { Course } from "@/types/ICourse";
 import { useEffect } from "react";
+import type { Course } from "@/types/ICourse";
 import { useCourseForm } from "./FormContext";
 
 type Mode = "create" | "edit";
