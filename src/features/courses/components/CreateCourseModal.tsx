@@ -1,6 +1,6 @@
-import type { Course } from "@/types/ICourse";
 import { Button, Modal, Stack } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Course } from "@/types/ICourse";
 import { CourseFormProvider, useCourseForm } from "../hooks/FormContext";
 import { CourseService } from "../services/coursesAPI";
 import { NameInput } from "./NameInput";
