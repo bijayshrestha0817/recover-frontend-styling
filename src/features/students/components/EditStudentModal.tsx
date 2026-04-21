@@ -1,8 +1,8 @@
 "use client";
 
+import type { Student } from "@/types/IStudent";
 import { Button, Group, Modal, Stack } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Student } from "@/types/IStudent";
 import { StudentFormProvider } from "../hooks/FormContext";
 import { useStudentFormLogic } from "../hooks/useStudentFormLogic";
 import { StudentService } from "../services/studentAPI";
@@ -36,16 +36,16 @@ export default function EditStudentModal({
 
   const mutation = useMutation({
     mutationFn: UPDATE_STUDENT,
-    onSuccess: () => {
+    onSuccess: (updateStudent) => {
+      queryClient.setQueryData(["students"], (old: Student[] = []) =>
+        old.map((s) => (s.id === updateStudent.id ? updateStudent : s)),
+      );
+
       queryClient.invalidateQueries({ queryKey: ["students"] });
-      handleClose();
+      resetForm();
+      close();
     },
   });
-
-  const handleClose = () => {
-    resetForm();
-    close();
-  };
 
   const handleSubmit = (values: typeof form.values) => {
     if (!student) return;
@@ -60,7 +60,7 @@ export default function EditStudentModal({
   };
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Edit Student" centered>
+    <Modal opened={opened} onClose={close} title="Edit Student" centered>
       <StudentFormProvider form={form}>
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>

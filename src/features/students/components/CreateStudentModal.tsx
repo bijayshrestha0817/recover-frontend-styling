@@ -1,4 +1,5 @@
 "use client";
+import type { Student } from "@/types/IStudent";
 import { Button, Modal, Stack } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { StudentFormProvider } from "../hooks/FormContext";
@@ -25,7 +26,11 @@ export function CreateStudentModal({ opened, close }: CreateStudentModalProps) {
 
   const mutation = useMutation({
     mutationFn: POST_STUDENT,
-    onSuccess: () => {
+    onSuccess: (storeStudent) => {
+      queryClient.setQueryData(["students"], (old: Student[] = []) =>
+        old.map((s) => (s.id === storeStudent.id ? storeStudent : s)),
+      );
+
       queryClient.invalidateQueries({ queryKey: ["students"] });
       resetForm();
       close();

@@ -1,7 +1,7 @@
+import type { Course } from "@/types/ICourse";
 import { Button, Group, Modal, TextInput } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import type { Course } from "@/types/ICourse";
 import { CourseService } from "../services/coursesAPI";
 
 interface EditCourseModalProps {
@@ -31,16 +31,15 @@ export function EditCourseModal({
 
   const mutation = useMutation({
     mutationFn: UPDATE_COURSE,
-    onSuccess: () => {
+    onSuccess: (updateCourse) => {
+      queryClient.setQueryData(["courses"], (old: Course[] = []) =>
+        old.map((c) => (c.id === course?.id ? updateCourse : c)),
+      );
+
       queryClient.invalidateQueries({ queryKey: ["courses"] });
-      handleClose();
+      close();
     },
   });
-
-  const handleClose = () => {
-    setName("");
-    close();
-  };
 
   const handleUpdate = () => {
     if (!course) return;
@@ -53,7 +52,7 @@ export function EditCourseModal({
   };
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Edit Course" centered>
+    <Modal opened={opened} onClose={close} title="Edit Course" centered>
       <form
         onSubmit={(e) => {
           e.preventDefault();
