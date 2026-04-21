@@ -1,6 +1,6 @@
-import type { Student } from "@/types/IStudent";
 import { Button, Group, Modal, Text } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { Student } from "@/types/IStudent";
 import { StudentService } from "../services/studentAPI";
 
 const { DELETE_STUDENT } = StudentService();

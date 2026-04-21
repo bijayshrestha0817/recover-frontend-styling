@@ -8,8 +8,8 @@ import { TableComponent } from "@/components/common/TableComponent";
 import type { Student } from "@/types/IStudent";
 import { StudentService } from "../services/studentAPI";
 import { CreateStudentModal } from "./CreateStudentModal";
-import EditStudentModal from "./EditStudentModal";
 import DeleteStudentModal from "./DeleteStudentModal";
+import EditStudentModal from "./EditStudentModal";
 
 const { GET_STUDENTS } = StudentService();
 
@@ -79,7 +79,7 @@ const StudentsPage = () => {
               color="red"
               onClick={() => {
                 setSelectedStudent(row);
-                deleteHandlers.open()
+                deleteHandlers.open();
               }}
             >
               Delete
@@ -98,10 +98,10 @@ const StudentsPage = () => {
       />
 
       <DeleteStudentModal
-      opened={deleteOpened}
-      close={deleteHandlers.close}
-      student={selectedStudent}
-      color="red"
+        opened={deleteOpened}
+        close={deleteHandlers.close}
+        student={selectedStudent}
+        color="red"
       />
 
       <div className="fixed bottom-6">
