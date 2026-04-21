@@ -1,7 +1,7 @@
 "use client";
 
-import type { Student } from "@/types/IStudent";
 import { useEffect } from "react";
+import type { Student } from "@/types/IStudent";
 import { useStudentForm } from "./FormContext";
 
 type Mode = "create" | "edit";
@@ -9,10 +9,10 @@ type Mode = "create" | "edit";
 interface Props {
   mode: Mode;
   student?: Student | null;
-  opened?: boolean
+  opened?: boolean;
 }
 
-export function useStudentFormLogic({ mode, student , opened}: Props) {
+export function useStudentFormLogic({ mode, student, opened }: Props) {
   const form = useStudentForm({
     mode: "uncontrolled",
     initialValues: {
