@@ -9,6 +9,7 @@ import type { Student } from "@/types/IStudent";
 import { StudentService } from "../services/studentAPI";
 import { CreateStudentModal } from "./CreateStudentModal";
 import EditStudentModal from "./EditStudentModal";
+import DeleteStudentModal from "./DeleteStudentModal";
 
 const { GET_STUDENTS } = StudentService();
 
@@ -18,7 +19,7 @@ const StudentsPage = () => {
 
   const [createOpened, openHandlers] = useDisclosure(false);
   const [editOpened, editHandlers] = useDisclosure(false);
-  // const [deleteOpened, deleteHandlers] = useDisclosure(false);
+  const [deleteOpened, deleteHandlers] = useDisclosure(false);
 
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
@@ -78,6 +79,7 @@ const StudentsPage = () => {
               color="red"
               onClick={() => {
                 setSelectedStudent(row);
+                deleteHandlers.open()
               }}
             >
               Delete
@@ -93,6 +95,13 @@ const StudentsPage = () => {
         close={editHandlers.close}
         student={selectedStudent}
         color="green"
+      />
+
+      <DeleteStudentModal
+      opened={deleteOpened}
+      close={deleteHandlers.close}
+      student={selectedStudent}
+      color="red"
       />
 
       <div className="fixed bottom-6">

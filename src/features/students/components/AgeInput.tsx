@@ -5,7 +5,7 @@ export function AgeInput() {
   const form = useStudentFormContext();
   return (
     <TextInput
-      //   label="age"
+        label="Age"
       placeholder="Age"
       key={form.key("age")}
       {...form.getInputProps("age")}

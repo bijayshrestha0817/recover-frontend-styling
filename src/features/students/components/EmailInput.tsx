@@ -5,7 +5,7 @@ export function EmailInput() {
   const form = useStudentFormContext();
   return (
     <TextInput
-      //   label="email"
+      label="Email"
       placeholder="Email"
       key={form.key("email")}
       {...form.getInputProps("email")}
