@@ -1,8 +1,10 @@
-import { Button, Group, Modal, TextInput } from "@mantine/core";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import type { Course } from "@/types/ICourse";
+import { Button, Group, Modal } from "@mantine/core";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CourseFormProvider } from "../hooks/FormContext";
+import { useCourseFormLogic } from "../hooks/useCourseFormLogic";
 import { CourseService } from "../services/coursesAPI";
+import { NameInput } from "./NameInput";
 
 interface EditCourseModalProps {
   opened: boolean;
@@ -19,15 +21,13 @@ export function EditCourseModal({
   course,
   color,
 }: EditCourseModalProps) {
-  const [name, setName] = useState("");
-
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (opened && course) {
-      setName(course.name);
-    }
-  }, [opened, course]);
+  const { form, resetForm } = useCourseFormLogic({
+    mode: "edit",
+    course,
+    opened,
+  });
 
   const mutation = useMutation({
     mutationFn: UPDATE_COURSE,
@@ -37,40 +37,33 @@ export function EditCourseModal({
       );
 
       queryClient.invalidateQueries({ queryKey: ["courses"] });
+      resetForm();
       close();
     },
   });
 
-  const handleUpdate = () => {
+  const handleUpdate = (values: typeof form.values) => {
     if (!course) return;
-    if (!name.trim()) return;
 
     mutation.mutate({
       id: course.id,
-      name: name.trim(),
+      ...values,
     });
   };
 
   return (
     <Modal opened={opened} onClose={close} title="Edit Course" centered>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleUpdate();
-        }}
-      >
-        <TextInput
-          label="Course Name"
-          value={name}
-          onChange={(e) => setName(e.currentTarget.value)}
-        />
+      <CourseFormProvider form={form}>
+        <form onSubmit={form.onSubmit(handleUpdate)}>
+          <NameInput />
 
-        <Group justify="flex-end" mt="md">
-          <Button type="submit" loading={mutation.isPending} color={color}>
-            Update
-          </Button>
-        </Group>
-      </form>
+          <Group justify="flex-end" mt="md">
+            <Button type="submit" loading={mutation.isPending} color={color}>
+              Update
+            </Button>
+          </Group>
+        </form>
+      </CourseFormProvider>
     </Modal>
   );
 }

@@ -1,7 +1,8 @@
+import type { Course } from "@/types/ICourse";
 import { Button, Modal, Stack } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Course } from "@/types/ICourse";
-import { CourseFormProvider, useCourseForm } from "../hooks/FormContext";
+import { CourseFormProvider } from "../hooks/FormContext";
+import { useCourseFormLogic } from "../hooks/useCourseFormLogic";
 import { CourseService } from "../services/coursesAPI";
 import { NameInput } from "./NameInput";
 
@@ -15,14 +16,8 @@ const { POST_COURSE } = CourseService();
 export function CreateCourseModal({ opened, close }: CreateCourseModalProps) {
   const queryClient = useQueryClient();
 
-  const form = useCourseForm({
-    mode: "uncontrolled",
-    initialValues: {
-      name: "",
-    },
-    validate: {
-      name: (value) => (value.trim().length === 0 ? "Name is required" : null),
-    },
+  const { form, resetForm } = useCourseFormLogic({
+    mode: "create",
   });
 
   const mutation = useMutation({
@@ -33,7 +28,7 @@ export function CreateCourseModal({ opened, close }: CreateCourseModalProps) {
       );
 
       queryClient.invalidateQueries({ queryKey: ["courses"] });
-      form.reset();
+      resetForm();
       close();
     },
   });
