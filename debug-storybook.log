@@ -1,0 +1,32 @@
+[07:57:50.665] [INFO] storybook v10.3.5
+[07:57:51.004] [DEBUG] Getting package.json info for /home/bijay/recover/package.json...
+[07:57:51.016] [WARN] Could not resolve addon "@storybook/addon-links", skipping. Is it installed?
+[07:57:51.022] [WARN] Could not resolve addon "@storybook/addon-interactions", skipping. Is it installed?
+[07:57:51.651] [WARN] Could not resolve addon "@storybook/addon-links", skipping. Is it installed?
+[07:57:51.653] [WARN] Could not resolve addon "@storybook/addon-interactions", skipping. Is it installed?
+[07:57:52.381] [INFO] Starting...
+[07:57:52.408] [WARN] unable to find package.json for radix-ui
+[07:57:52.468] [WARN] No story files found for the specified pattern: [34msrc/**/*.mdx[39m
+[07:57:52.652] [ERROR] [38;2;241;97;97mSB_CORE-SERVER_0004 (NoMatchingExportError): There was an exports mismatch error when trying to build Storybook.
+Please check whether the versions of your Storybook packages match whenever possible, as this might be the cause.
+
+Problematic example:
+{ "@storybook/react": "7.5.3", "@storybook/react-vite": "7.4.5", "storybook": "7.3.0" }
+
+Correct example:
+{ "@storybook/react": "7.5.3", "@storybook/react-vite": "7.5.3", "storybook": "7.5.3" }
+
+Please run `npx storybook doctor` for guidance on how to fix this issue.
+
+More info: 
+[39m
+    at buildOrThrow (file://./node_modules/storybook/dist/core-server/index.js:4513:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async buildDevStandalone (file://./node_modules/storybook/dist/core-server/index.js:8033:41)
+    at async withTelemetry (file://./node_modules/storybook/dist/_node-chunks/chunk-FIR43JGQ.js:225:12)
+    at async dev (file://./node_modules/storybook/dist/bin/core.js:2736:3)
+    at async _Command.<anonymous> (file://./node_modules/storybook/dist/bin/core.js:2806:92)
+[07:57:52.658] [WARN] Broken build, fix the error above.
+You may need to refresh the browser.
+[07:57:52.666] [WARN] Could not resolve addon "@storybook/addon-links", skipping. Is it installed?
+[07:57:52.667] [WARN] Could not resolve addon "@storybook/addon-interactions", skipping. Is it installed?
