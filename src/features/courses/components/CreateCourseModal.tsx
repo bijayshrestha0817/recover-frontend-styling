@@ -1,5 +1,6 @@
 import { Button, Modal, Stack } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { Course } from "@/types/ICourse";
 import { CourseFormProvider } from "../hooks/FormContext";
 import { useCourseFormLogic } from "../hooks/useCourseFormLogic";
@@ -29,12 +30,23 @@ export function CreateCourseModal({ opened, close }: CreateCourseModalProps) {
 
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       resetForm();
+
+      toast.success(`Course "${storeCourse.data.name}" created successfully!`);
       close();
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 
   const handleSubmit = (values: typeof form.values) => {
-    mutation.mutate(values);
+    try {
+      mutation.mutate(values);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "An unknown error occurred",
+      );
+    }
   };
 
   return (

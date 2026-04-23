@@ -1,5 +1,6 @@
 import { Button, Group, Modal, Text } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { Student } from "@/types/IStudent";
 import { StudentService } from "../services/studentAPI";
 
@@ -24,6 +25,8 @@ const DeleteStudentModal = ({
     mutationFn: DELETE_STUDENT,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["students"] });
+      toast.success(`Student "${student?.name}" deleted successfully!`);
+
       close();
     },
   });

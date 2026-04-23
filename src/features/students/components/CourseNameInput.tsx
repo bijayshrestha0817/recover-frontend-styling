@@ -14,8 +14,10 @@ export function CourseNameInput() {
     queryFn: GET_COURSES_FOR_STUDENT,
   });
 
+  console.log(data);
+
   const options =
-    data?.map((course) => ({
+    data?.data?.map((course) => ({
       value: String(course.id),
       label: course.name,
     })) ?? [];

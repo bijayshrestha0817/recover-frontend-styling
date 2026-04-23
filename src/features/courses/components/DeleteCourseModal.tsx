@@ -1,5 +1,6 @@
 import { Button, Group, Modal, Text } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { Course } from "@/types/ICourse";
 import { CourseService } from "../services/coursesAPI";
 
@@ -24,6 +25,7 @@ const DeleteCourseModal = ({
     mutationFn: DELETE_COURSE,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
+      toast.success(`Course "${course?.name}" deleted successfully!`);
       close();
     },
   });

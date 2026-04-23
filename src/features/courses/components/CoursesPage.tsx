@@ -28,8 +28,8 @@ export default function CoursesPage() {
     queryFn: () => GET_COURSES(page),
   });
 
-  const courses = data?.results ?? [];
-  const total = data?.count ?? 0;
+  const courses = data?.data?.results ?? [];
+  const total = data?.data?.count ?? 0;
 
   return (
     <>

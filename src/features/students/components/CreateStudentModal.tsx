@@ -1,6 +1,7 @@
 "use client";
 import { Button, Modal, Stack } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { Student } from "@/types/IStudent";
 import { StudentFormProvider } from "../hooks/FormContext";
 import { useStudentFormLogic } from "../hooks/useStudentFormLogic";
@@ -33,6 +34,7 @@ export function CreateStudentModal({ opened, close }: CreateStudentModalProps) {
 
       queryClient.invalidateQueries({ queryKey: ["students"] });
       resetForm();
+      toast.success(`Course "${storeStudent.name}" created successfully!`);
       close();
     },
   });

@@ -1,5 +1,6 @@
 import { Button, Group, Modal } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { Course } from "@/types/ICourse";
 import { CourseFormProvider } from "../hooks/FormContext";
 import { useCourseFormLogic } from "../hooks/useCourseFormLogic";
@@ -38,6 +39,7 @@ export function EditCourseModal({
 
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       resetForm();
+      toast.success(`Course "${updateCourse.data.name}" updated successfully!`);
       close();
     },
   });
