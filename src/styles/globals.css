@@ -1,9 +1,5 @@
 @import "tailwindcss";
 @layer theme, base, mantine, components, utilities;
-@import "tailwindcss";
-@import "@mantine/core/styles.layer.css";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
 @custom-variant dark (&:where([data-mantine-color-scheme=dark], [data-mantine-color-scheme=dark] *));
 .demo {
   background: var(--background);

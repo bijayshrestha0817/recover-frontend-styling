@@ -9,17 +9,19 @@
     "lint": "biome check",
     "format": "biome format --write",
     "check": "biome check --write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@mantine/carousel": "^9.0.1",
     "@mantine/charts": "^9.0.1",
     "@mantine/code-highlight": "^9.0.1",
-    "@mantine/core": "^9.0.1",
+    "@mantine/core": "^9.1.0",
     "@mantine/dates": "^9.0.1",
     "@mantine/dropzone": "^9.0.1",
     "@mantine/form": "^9.0.1",
-    "@mantine/hooks": "^9.0.1",
+    "@mantine/hooks": "^9.1.0",
     "@mantine/modals": "^9.0.1",
     "@mantine/notifications": "^9.0.1",
     "@mantine/nprogress": "^9.0.1",
@@ -58,6 +60,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
+    "@storybook/addon-docs": "^10.3.5",
+    "@storybook/addon-links": "^10.3.5",
+    "@storybook/addon-vitest": "^10.3.5",
+    "@storybook/nextjs-vite": "^10.3.5",
     "@tailwindcss/postcss": "^4",
     "@tanstack/eslint-plugin-query": "^5.99.0",
     "@types/node": "^20",
@@ -68,8 +74,14 @@
     "postcss": "^8.5.9",
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
+    "storybook": "^10.3.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^8.0.9",
+    "vitest": "^4.1.5",
+    "playwright": "^1.59.1",
+    "@vitest/browser-playwright": "^4.1.5",
+    "@vitest/coverage-v8": "^4.1.5"
   },
   "ignoreScripts": [
     "sharp",

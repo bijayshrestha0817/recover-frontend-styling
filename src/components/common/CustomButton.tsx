@@ -1,15 +1,26 @@
-import { Button } from "@mantine/core";
+type CustomButtonProps = {
+  label?: string;
+  variant?: "primary" | "secondary";
+  styling?: string;
+};
 
-export function CustomButton() {
+export function CustomButton({
+  label = "Click me",
+  variant = "primary",
+  styling,
+}: CustomButtonProps) {
   return (
     <div>
       <button
         type="button"
-        className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark"
+        className={`px-4 py-2  rounded ${
+          variant === "primary"
+            ? "bg-primary text-white"
+            : "bg-gray-300 text-black"
+        } ${styling}`}
       >
-        Click me
+        {label}
       </button>
-      <Button className=" px-20 bg-amber-500 dark:bg-pink-600">Crazy</Button>
     </div>
   );
 }
