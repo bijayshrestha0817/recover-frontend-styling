@@ -28,8 +28,8 @@ const StudentsPage = () => {
     queryFn: () => GET_STUDENTS(page),
   });
 
-  const students = data?.results ?? [];
-  const total = data?.count ?? 0;
+  const students = data?.data?.results ?? [];
+  const total = data?.data?.count ?? 0;
 
   return (
     <>

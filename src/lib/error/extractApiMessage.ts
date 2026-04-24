@@ -1,6 +1,7 @@
 type ApiErrorResponse = {
   message?: string;
   detail?: string;
+  [key: string]: unknown;
 };
 
 type ErrorShape = {
@@ -9,13 +10,32 @@ type ErrorShape = {
     json?: ApiErrorResponse;
   };
   message?: string;
+  status?: number;
 };
+
+function flattenErrors(obj: Record<string, unknown>): string {
+  const messages: string[] = [];
+
+  for (const value of Object.values(obj)) {
+    if (Array.isArray(value)) {
+      messages.push(...value.map(String));
+    } else if (typeof value === "string") {
+      messages.push(value);
+    }
+  }
+
+  return messages.length > 0 ? messages.join(" | ") : "Something went wrong";
+}
 
 function tryParseJSON(value: string): string {
   try {
     const parsed = JSON.parse(value) as ApiErrorResponse;
 
-    return parsed.message || parsed.detail || value;
+    if (parsed.message || parsed.detail) {
+      return parsed.message || parsed.detail || value;
+    }
+
+    return flattenErrors(parsed);
   } catch {
     return value;
   }
@@ -28,19 +48,18 @@ export function extractApiMessage(error: unknown): string {
 
   const err = error as ErrorShape;
 
-  const rawMessage =
-    err.json?.message ||
-    err.json?.detail ||
-    err.response?.json?.message ||
-    err.response?.json?.detail ||
-    err.message;
+  const json = err.json || err.response?.json;
 
-  if (!rawMessage) {
-    return "Something went wrong";
+  if (json && typeof json === "object") {
+    if (json.message || json.detail) {
+      return json.message || json.detail || "Something went wrong";
+    }
+
+    return flattenErrors(json);
   }
 
-  if (typeof rawMessage === "string") {
-    return tryParseJSON(rawMessage);
+  if (typeof err.message === "string") {
+    return tryParseJSON(err.message);
   }
 
   return "Something went wrong";

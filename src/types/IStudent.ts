@@ -6,3 +6,10 @@ export type Student = {
   course_name: string;
   course?: string;
 };
+
+export type StudentList = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Student[];
+};

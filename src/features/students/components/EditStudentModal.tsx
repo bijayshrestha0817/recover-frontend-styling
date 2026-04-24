@@ -2,7 +2,8 @@
 
 import { Button, Group, Modal, Stack } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Student } from "@/types/IStudent";
+import { toast } from "sonner";
+import type { Student } from "../../../types/IStudent";
 import { StudentFormProvider } from "../hooks/FormContext";
 import { useStudentFormLogic } from "../hooks/useStudentFormLogic";
 import { StudentService } from "../services/studentAPI";
@@ -44,6 +45,9 @@ export default function EditStudentModal({
       queryClient.invalidateQueries({ queryKey: ["students"] });
       resetForm();
       close();
+    },
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
 

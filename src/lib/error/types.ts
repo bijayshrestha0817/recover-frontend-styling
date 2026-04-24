@@ -3,6 +3,7 @@ export type ApiErrorResponse = {
   detail?: string;
   code?: string;
   errors?: unknown;
+  [key: string]: unknown;
 };
 
 export type NormalizedApiError = {

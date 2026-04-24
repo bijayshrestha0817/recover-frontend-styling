@@ -27,12 +27,8 @@ export default function CourseForm() {
   });
 
   const onSubmit = async (values: typeof form.values) => {
-    try {
-      await mutation.mutateAsync(values);
-      form.reset();
-    } catch (err) {
-      console.log(err);
-    }
+    await mutation.mutateAsync(values);
+    form.reset();
   };
 
   return (

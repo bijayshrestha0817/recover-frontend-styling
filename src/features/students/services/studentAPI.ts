@@ -1,5 +1,6 @@
 import wretch from "wretch";
-import type { Student } from "@/types/IStudent";
+import type { ApiResponse } from "@/types/IApiResponse";
+import type { Student, StudentList } from "@/types/IStudent";
 import { handleApi } from "../../../lib/error";
 import type { CourseDropdownResponse } from "../../../types/ICourse";
 
@@ -9,19 +10,12 @@ const API_URL = wretch(API_BASE_URL)
   .accept("application/json")
   .content("application/json");
 
-interface StudentResponse {
-  count: number;
-  results: Student[];
-}
-
 const GET_STUDENTS = (page: number) => {
-  return API_URL.url(`/students/?page=${page}`)
-    .get()
-    .json<StudentResponse>()
-    .catch((error) => {
-      console.error("Error fetching students:", error);
-      throw error;
-    });
+  return handleApi(
+    API_URL.url(`/students/?page=${page}`)
+      .get()
+      .json<ApiResponse<StudentList>>(),
+  );
 };
 
 const POST_STUDENT = (data: {
@@ -30,13 +24,9 @@ const POST_STUDENT = (data: {
   age: number;
   course: string;
 }) => {
-  return API_URL.url("/students/")
-    .post(data)
-    .json<Student>()
-    .catch((error) => {
-      console.error("Error creating student:", error);
-      throw error;
-    });
+  return handleApi(
+    API_URL.url("/students/").post(data).json<ApiResponse<Student>>(),
+  );
 };
 
 const UPDATE_STUDENT = (data: {
@@ -46,23 +36,13 @@ const UPDATE_STUDENT = (data: {
   age: number | null;
   course: string;
 }) => {
-  return API_URL.url(`/students/${data.id}/`)
-    .put(data)
-    .json<Student>()
-    .catch((error) => {
-      console.error("Error updating student:", error);
-      throw error;
-    });
+  return handleApi(
+    API_URL.url(`/students/${data.id}/`).put(data).json<Student>(),
+  );
 };
 
 const DELETE_STUDENT = (data: { id: number }) => {
-  return API_URL.url(`/students/${data.id}/`)
-    .delete()
-    .res()
-    .catch((error) => {
-      console.error("Error deleting student:", error);
-      throw error;
-    });
+  return handleApi(API_URL.url(`/students/${data.id}/`).delete().res());
 };
 
 const GET_COURSES_FOR_STUDENT = () => {
