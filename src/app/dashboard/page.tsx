@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/features/auth/context/AuthContext";
 
 export default function DashboardPage() {
-  const { user, loading, } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
