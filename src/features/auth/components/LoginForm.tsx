@@ -17,13 +17,11 @@ import { useForm } from "@mantine/form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
-import { AuthService } from "@/features/auth/services/authAPI";
 import classes from "../../../styles/AuthenticationTitle.module.css";
-
-const { login } = AuthService();
+import { useAuth } from "../context/AuthContext";
 
 const LoginForm = () => {
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,15 +39,7 @@ const LoginForm = () => {
     setError(null);
 
     try {
-      const data = await login(values.username, values.password).json<{
-        access: string;
-        refresh: string;
-      }>();
-
-      localStorage.setItem("access", data.access);
-      localStorage.setItem("refresh", data.refresh);
-
-      toast.success("Login successful!");
+      await login(values.username, values.password);
       router.push("/dashboard");
     } catch (err) {
       console.error(err);

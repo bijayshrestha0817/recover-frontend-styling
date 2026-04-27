@@ -1,8 +1,8 @@
 "use client";
+
 import {
   Burger,
   Center,
-  Collapse,
   Container,
   Divider,
   Drawer,
@@ -15,56 +15,71 @@ import { useDisclosure } from "@mantine/hooks";
 import { MantineLogo } from "@mantinex/mantine-logo";
 import { IconChevronDown } from "@tabler/icons-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { useAuth } from "@/features/auth/context/AuthContext";
 import type { LinkItem } from "@/types/IHeader";
 import classes from "../../styles/Header.module.css";
 
-const links: LinkItem[] = [
+const baseLinks: LinkItem[] = [
   { link: "/students", label: "Students" },
   { link: "/courses", label: "Courses" },
-
-  // hide the login rout if login already
-  { link: "/login", label: "Login" },
 ];
 
 export function Header() {
   const [opened, { toggle, close }] = useDisclosure(false);
 
-  const items = links.map((link) => {
-    const menuItems = link?.links?.map((item) => (
-      <Menu.Item key={item.link}>
-        <Link href={item.link} className={classes.link}>
-          {item.label}
-        </Link>
-      </Menu.Item>
-    ));
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
-    if (menuItems) {
-      return (
-        <Menu
-          key={link.label}
-          trigger="hover"
-          transitionProps={{ exitDuration: 0 }}
-          withinPortal
-        >
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+    close();
+  };
+
+  const items = (
+    <>
+      {baseLinks.map((link) => (
+        <Link key={link.label} href={link.link} className={classes.link}>
+          {link.label}
+        </Link>
+      ))}
+
+      {!user ? (
+        <Link href="/login" className={classes.link}>
+          Login
+        </Link>
+      ) : (
+        <Menu shadow="md" width={180} position="bottom-end" withArrow>
+          <Link href="/dashboard" className={classes.link}>
+            Dashboard
+          </Link>
+
           <Menu.Target>
-            <Link href={link.link} className={classes.link}>
+            <UnstyledButton className={classes.link}>
               <Center>
-                <span className={classes.linkLabel}>{link.label}</span>
+                <span className={classes.linkLabel}>{user.username}</span>
                 <IconChevronDown size={14} stroke={1.5} />
               </Center>
-            </Link>
+            </UnstyledButton>
           </Menu.Target>
-          <Menu.Dropdown>{menuItems}</Menu.Dropdown>
-        </Menu>
-      );
-    }
 
-    return (
-      <Link key={link.label} href={link.link} className={classes.link}>
-        {link.label}
-      </Link>
-    );
-  });
+          <Menu.Dropdown>
+            <Menu.Item>
+              <Link href="/profile" className={classes.link}>
+                Profile
+              </Link>
+            </Menu.Item>
+
+            <Menu.Item color="red" onClick={handleLogout}>
+              Logout
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+      )}
+    </>
+  );
 
   return (
     <header className={classes.header}>
@@ -97,53 +112,41 @@ export function Header() {
       >
         <ScrollArea h="calc(100vh - 80px)" mx="-md">
           <Divider my="sm" />
-          {links.map((link) => {
-            if (link.links) {
-              return <DrawerLinksGroup key={link.label} link={link} />;
-            }
 
-            return (
-              <Link key={link.label} href={link.link} className={classes.link}>
-                {link.label}
+          {baseLinks.map((link) => (
+            <Link
+              key={link.label}
+              href={link.link}
+              className={classes.link}
+              onClick={close}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          <Divider my="sm" />
+
+          {!user ? (
+            <Link href="/login" className={classes.link} onClick={close}>
+              Login
+            </Link>
+          ) : (
+            <>
+              <Link href="/profile" className={classes.link} onClick={close}>
+                Profile
               </Link>
-            );
-          })}
+
+              <UnstyledButton
+                onClick={handleLogout}
+                className={classes.link}
+                style={{ color: "red", width: "100%", textAlign: "left" }}
+              >
+                Logout
+              </UnstyledButton>
+            </>
+          )}
         </ScrollArea>
       </Drawer>
     </header>
-  );
-}
-
-function DrawerLinksGroup({
-  link,
-}: {
-  link: {
-    link: string;
-    label: string;
-    links?: { link: string; label: string }[];
-  };
-}) {
-  const [opened, { toggle }] = useDisclosure(false);
-
-  return (
-    <>
-      <UnstyledButton className={classes.link} onClick={toggle}>
-        <Center inline>
-          <span className={classes.linkLabel}>{link.label}</span>
-          <IconChevronDown size={14} stroke={1.5} />
-        </Center>
-      </UnstyledButton>
-      <Collapse expanded={opened}>
-        {link.links?.map((subLink) => (
-          <Link
-            key={subLink.link}
-            href={subLink.link}
-            className={classes.subLink}
-          >
-            {subLink.label}
-          </Link>
-        ))}
-      </Collapse>
-    </>
   );
 }

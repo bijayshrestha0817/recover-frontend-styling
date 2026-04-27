@@ -4,6 +4,7 @@ import { Geist } from "next/font/google";
 import { Header } from "@/components/layouts/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { theme } from "@/constants/theme";
+import { AuthProvider } from "@/features/auth/context/AuthContext";
 import { cn } from "@/lib/utils";
 import QueryProvider from "@/providers/QueryProvider";
 import "../styles/globals.css";
@@ -26,17 +27,18 @@ export default function RootLayout({
       {...mantineHtmlProps}
       className={cn("font-sans", geist.variable)}
     >
-      <head></head>
       <body className={`demo antialiased`}>
-        <QueryProvider>
-          <MantineProvider theme={theme}>
-            <Header />
-            <main style={{ paddingTop: "56px" }}>
-              {children}
-              <Toaster richColors />
-            </main>
-          </MantineProvider>
-        </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            <MantineProvider theme={theme}>
+              <Header />
+              <main style={{ paddingTop: "56px" }}>
+                {children}
+                <Toaster richColors />
+              </main>
+            </MantineProvider>
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );
