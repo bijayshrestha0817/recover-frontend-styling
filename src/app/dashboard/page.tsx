@@ -1,12 +1,11 @@
 "use client";
 
-import { Button } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/features/auth/context/AuthContext";
 
 export default function DashboardPage() {
-  const { user, loading, logout } = useAuth();
+  const { user, loading, } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
