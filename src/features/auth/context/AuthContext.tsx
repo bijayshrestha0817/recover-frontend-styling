@@ -1,37 +1,54 @@
 "use client";
 
+import type { User } from "@/types/IUser";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { createContext, useContext, useEffect, useState } from "react";
-import type { User } from "@/types/IUser";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import type { AuthContextType } from "../types/AuthContextType";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: process.env.NEXT_PUBLIC_DJANGO_AUTH_API_URL,
 });
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [user, setUser] = useState<User | null>(null);
-
   const [loading, setLoading] = useState(true);
 
-  const loadUser = async () => {
+  const loadUser = useCallback(async () => {
+    const token = Cookies.get("access_token");
+
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await api.get("/auth/me/", {
         headers: {
-          Authorization: `Bearer ${Cookies.get("access_token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       setUser(res.data);
-    } catch {
+    } catch (error) {
       setUser(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const login = async (username: string, password: string) => {
     const res = await api.post("/auth/token/", {
@@ -54,7 +71,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = async (
     username: string,
     email: string,
-    password: string,
+    password: string
   ) => {
     try {
       const response = await api.post("/register/", {
@@ -67,20 +84,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (error: unknown) {
       console.error("Register failed:", error);
 
-      const apiError = {
+      throw {
         message: "Registration failed",
       };
-
-      throw apiError;
     }
   };
 
   useEffect(() => {
     loadUser();
-  });
+  }, [loadUser]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, logout, register }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -88,6 +105,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside provider");
+
+  if (!ctx) {
+    throw new Error("useAuth must be used inside provider");
+  }
+
   return ctx;
 };
