@@ -1,11 +1,11 @@
 "use client";
 
-import { TableComponent } from "@/components/common/TableComponent";
-import type { Student } from "@/types/IStudent";
 import { Button, Group, Pagination } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { TableComponent } from "@/components/common/TableComponent";
+import type { Student } from "@/types/IStudent";
 import { StudentService } from "../services/studentAPI";
 import { CreateStudentModal } from "./CreateStudentModal";
 import DeleteStudentModal from "./DeleteStudentModal";
@@ -26,8 +26,7 @@ const StudentsPageClient = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["students", page],
     queryFn: () => GET_STUDENTS(page),
-    staleTime: 1000*6*5
-
+    staleTime: 1000 * 6 * 5,
   });
 
   const students = data?.data?.results ?? [];

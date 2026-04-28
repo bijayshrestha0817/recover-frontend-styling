@@ -26,7 +26,7 @@ export default function CoursesPageClient() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["courses", page],
     queryFn: () => GET_COURSES(page),
-    staleTime: 1000*6*5
+    staleTime: 1000 * 6 * 5,
   });
 
   const courses = data?.data?.results ?? [];
