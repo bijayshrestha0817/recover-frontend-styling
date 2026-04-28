@@ -14,11 +14,10 @@ import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { AuthService } from "@/features/auth/services/authAPI";
-
-const { register } = AuthService();
+import { useAuth } from "@/features/auth/context/AuthContext";
 
 export default function RegisterPage() {
+  const { register } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,7 +43,7 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      await register(values.email, values.username, values.password);
+      await register(values.username, values.email, values.password);
       toast.success("Registration successful! Please log in.");
       router.push("/login");
     } catch (err) {
