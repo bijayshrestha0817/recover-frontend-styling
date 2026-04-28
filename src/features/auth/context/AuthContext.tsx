@@ -1,6 +1,5 @@
 "use client";
 
-import type { User } from "@/types/IUser";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {
@@ -10,6 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import type { User } from "@/types/IUser";
 import type { AuthContextType } from "../types/AuthContextType";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,11 +18,7 @@ const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_DJANGO_AUTH_API_URL,
 });
 
-export const AuthProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -43,7 +39,7 @@ export const AuthProvider = ({
       });
 
       setUser(res.data);
-    } catch (error) {
+    } catch (error: unknown) {
       setUser(null);
     } finally {
       setLoading(false);
@@ -71,7 +67,7 @@ export const AuthProvider = ({
   const register = async (
     username: string,
     email: string,
-    password: string
+    password: string,
   ) => {
     try {
       const response = await api.post("/register/", {
@@ -95,9 +91,7 @@ export const AuthProvider = ({
   }, [loadUser]);
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, login, logout, register }}
-    >
+    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

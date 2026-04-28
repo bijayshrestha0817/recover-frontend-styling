@@ -1,6 +1,5 @@
 "use client";
 
-import { useAuth } from "@/features/auth/context/AuthContext";
 import {
   Avatar,
   Button,
@@ -16,6 +15,7 @@ import {
 } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useAuth } from "@/features/auth/context/AuthContext";
 
 export default function Page() {
   const { user, loading, logout } = useAuth();
@@ -41,7 +41,6 @@ export default function Page() {
     <Container size="xs" py="xl">
       <Card shadow="lg" radius="xl" p="lg">
         <Stack align="center" gap="sm">
-          
           <Avatar size={80} radius="xl" color="blue">
             {user.username?.charAt(0).toUpperCase()}
           </Avatar>
@@ -57,24 +56,27 @@ export default function Page() {
 
         <Stack gap="xs">
           <Group justify="space-between">
-            <Text size="sm" c="dimmed">Username</Text>
-            <Text size="sm" fw={500}>{user.username}</Text>
+            <Text size="sm" c="dimmed">
+              Username
+            </Text>
+            <Text size="sm" fw={500}>
+              {user.username}
+            </Text>
           </Group>
 
           <Group justify="space-between">
-            <Text size="sm" c="dimmed">Email</Text>
-            <Text size="sm" fw={500}>{user.email ? user.email : `N/A`}</Text>
+            <Text size="sm" c="dimmed">
+              Email
+            </Text>
+            <Text size="sm" fw={500}>
+              {user.email ? user.email : `N/A`}
+            </Text>
           </Group>
         </Stack>
 
         <Divider my="lg" />
 
-        <Button
-          color="red"
-          fullWidth
-          radius="md"
-          onClick={logout}
-        >
+        <Button color="red" fullWidth radius="md" onClick={logout}>
           Logout
         </Button>
       </Card>
