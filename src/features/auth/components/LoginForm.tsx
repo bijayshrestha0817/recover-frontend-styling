@@ -33,10 +33,11 @@ const LoginForm = () => {
   });
 
   const router = useRouter();
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
   const redirectParam = searchParams.get("redirect");
-  const redirectTo = redirectParam && redirectParam !== "/login" ? redirectParam : "/dashboard";
+  const redirectTo =
+    redirectParam && redirectParam !== "/login" ? redirectParam : "/dashboard";
 
   const onSubmit = async (values: typeof form.values) => {
     setLoading(true);

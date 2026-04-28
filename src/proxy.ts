@@ -12,8 +12,8 @@ export function proxy(request: NextRequest) {
   const protectedRoute = isProtectedRoute(pathname);
 
   if (!token && protectedRoute) {
-    const loginUrl = new URL("/login", request.url)
-    loginUrl.searchParams.set("redirect", pathname)
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
