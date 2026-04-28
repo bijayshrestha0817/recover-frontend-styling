@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import classes from "../../../styles/AuthenticationTitle.module.css";
 import { useAuth } from "../context/AuthContext";
@@ -33,6 +33,11 @@ const LoginForm = () => {
   });
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const redirectParam = searchParams.get("redirect");
+  const redirectTo =
+    redirectParam && redirectParam !== "/login" ? redirectParam : "/dashboard";
 
   const onSubmit = async (values: typeof form.values) => {
     setLoading(true);
@@ -40,7 +45,7 @@ const LoginForm = () => {
 
     try {
       await login(values.username, values.password);
-      router.push("/dashboard");
+      router.push(redirectTo);
     } catch (err) {
       console.error(err);
       setError("Invalid username or password.");
