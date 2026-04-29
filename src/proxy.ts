@@ -11,11 +11,11 @@ export function proxy(request: NextRequest) {
   const isLoginPage = pathname === "/login";
 
   // 1. Block unauthenticated users from protected routes
-if (!token && isProtected && !isLoginPage) {
-  const loginUrl = new URL("/login", request.url);
-  loginUrl.searchParams.set("redirect", pathname);
-  return NextResponse.redirect(loginUrl);
-}
+  if (!token && isProtected && !isLoginPage) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
 
   // 2. Prevent logged-in users from visiting login page
   if (token && isLoginPage) {

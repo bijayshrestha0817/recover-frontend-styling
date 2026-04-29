@@ -34,7 +34,9 @@ export function CreateStudentModal({ opened, close }: CreateStudentModalProps) {
 
       queryClient.invalidateQueries({ queryKey: ["students"] });
       resetForm();
-      toast.success(`Student "${storeStudent.data.name}" created successfully!`);
+      toast.success(
+        `Student "${storeStudent.data.name}" created successfully!`,
+      );
       close();
     },
     onError: (error) => {

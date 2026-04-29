@@ -35,8 +35,11 @@ const LoginForm = () => {
   const searchParams = useSearchParams();
 
   const redirectParam = searchParams.get("redirect");
-  
-  const redirectTo = redirectParam && redirectParam.startsWith("/") && redirectParam !== "/login" ? redirectParam : "/dashboard";
+
+  const redirectTo =
+    redirectParam && redirectParam.startsWith("/") && redirectParam !== "/login"
+      ? redirectParam
+      : "/dashboard";
 
   const onSubmit = async (values: typeof form.values) => {
     setLoading(true);
@@ -44,7 +47,7 @@ const LoginForm = () => {
 
     try {
       await login(values.username, values.password);
-      window.location.href = redirectTo
+      window.location.href = redirectTo;
     } catch (err) {
       console.error(err);
       setError("Invalid username or password.");
