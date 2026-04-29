@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               secure: true,
               sameSite: "strict",
             });
-            original.headers["Authorization"] = `Bearer ${data.access}`;
+            original.headers.Authorization = `Bearer ${data.access}`;
 
             return api(original);
           } catch {

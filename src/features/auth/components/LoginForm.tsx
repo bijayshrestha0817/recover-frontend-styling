@@ -37,7 +37,7 @@ const LoginForm = () => {
   const redirectParam = searchParams.get("redirect");
 
   const redirectTo =
-    redirectParam && redirectParam.startsWith("/") && redirectParam !== "/login"
+    redirectParam?.startsWith("/") && redirectParam !== "/login"
       ? redirectParam
       : "/dashboard";
 
