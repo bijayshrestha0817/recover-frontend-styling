@@ -1,5 +1,6 @@
 "use client";
 
+import type { User } from "@/types/IUser";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {
@@ -9,7 +10,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import type { User } from "@/types/IUser";
 import type { AuthContextType } from "../types/AuthContextType";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,22 +47,75 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
+
+useEffect(() => {
+  const interceptorId = api.interceptors.response.use(
+    (res) => res,
+    async (error) => {
+      const original = error.config;
+
+      if (error.response?.status === 401 && !original._retry) {
+        original._retry = true;
+
+        try {
+          const refresh = Cookies.get("refresh_token");
+          const { data } = await api.post("/auth/token/refresh/", { refresh });
+
+          Cookies.set("access_token", data.access, {
+            secure: true,
+            sameSite: "strict",
+          });
+          original.headers["Authorization"] = `Bearer ${data.access}`;
+
+          return api(original);
+        } catch {
+          Cookies.remove("access_token");
+          Cookies.remove("refresh_token");
+          window.location.href = "/login"; 
+        }
+      }
+
+      return Promise.reject(error);
+    }
+  );
+
+  return () => {
+    api.interceptors.response.eject(interceptorId);
+  };
+}, []);
   const login = async (username: string, password: string) => {
     const res = await api.post("/auth/token/", {
       username,
       password,
     });
 
-    Cookies.set("access_token", res.data.access);
-    Cookies.set("refresh_token", res.data.refresh);
+    Cookies.set("access_token", res.data.access,
+      {
+        secure: true,
+        sameSite:"strict",
+        expires: 1
+      }
+    );
+    Cookies.set("refresh_token", res.data.refresh,{
+        secure: true,
+        sameSite:"strict",
+        expires: 7
+    });
 
     await loadUser();
   };
 
-  const logout = () => {
+  const logout = async() => {
+    try{
+    const refresh = Cookies.get("refresh_token");
+    await api.post("/auth/logout/", { refresh });
+    }
+    finally{
     Cookies.remove("access_token");
     Cookies.remove("refresh_token");
     setUser(null);
+    window.location.href = "/login"
+    }
   };
 
   const register = async (
