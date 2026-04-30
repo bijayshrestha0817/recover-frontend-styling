@@ -1,5 +1,6 @@
 "use client";
 
+import type { User } from "@/types/IUser";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {
@@ -9,7 +10,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import type { User } from "@/types/IUser";
 import type { AuthContextType } from "../types/AuthContextType";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -39,8 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       setUser(res.data);
-    } catch (error: unknown) {
-      console.log(error);
+    } catch {
       setUser(null);
     } finally {
       setLoading(false);
@@ -53,11 +52,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       async (error) => {
         const original = error.config;
 
+        if (original?.url?.includes("/auth/token/")) {
+          return Promise.reject(error);
+        }
+
         if (error.response?.status === 401 && !original._retry) {
           original._retry = true;
 
           try {
             const refresh = Cookies.get("refresh_token");
+
+            if (!refresh) {
+              throw new Error("No refresh token");
+            }
+
             const { data } = await api.post("/auth/token/refresh/", {
               refresh,
             });
@@ -66,42 +74,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               secure: true,
               sameSite: "strict",
             });
+
             original.headers.Authorization = `Bearer ${data.access}`;
 
             return api(original);
           } catch {
             Cookies.remove("access_token");
             Cookies.remove("refresh_token");
-            window.location.href = "/login";
+
+            if (window.location.pathname !== "/login") {
+              window.location.href = "/login";
+            }
           }
         }
 
         return Promise.reject(error);
-      },
+      }
     );
 
     return () => {
       api.interceptors.response.eject(interceptorId);
     };
   }, []);
+
   const login = async (username: string, password: string) => {
-    const res = await api.post("/auth/token/", {
-      username,
-      password,
-    });
+    try {
+      const res = await api.post("/auth/token/", {
+        username,
+        password,
+      });
 
-    Cookies.set("access_token", res.data.access, {
-      secure: true,
-      sameSite: "strict",
-      expires: 1,
-    });
-    Cookies.set("refresh_token", res.data.refresh, {
-      secure: true,
-      sameSite: "strict",
-      expires: 7,
-    });
+      Cookies.set("access_token", res.data.access, {
+        secure: true,
+        sameSite: "strict",
+        expires: 1,
+      });
 
-    await loadUser();
+      Cookies.set("refresh_token", res.data.refresh, {
+        secure: true,
+        sameSite: "strict",
+        expires: 7,
+      });
+
+      await loadUser();
+    } catch (error) {
+      {
+        throw new Error("Invalid username or password");
+      }
+    }
   };
 
   const logout = async () => {
@@ -119,7 +139,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = async (
     username: string,
     email: string,
-    password: string,
+    password: string
   ) => {
     try {
       const response = await api.post("/register/", {
@@ -129,12 +149,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       return response.data;
-    } catch (error: unknown) {
-      console.error("Register failed:", error);
-
-      throw {
-        message: "Registration failed",
-      };
+    } catch {
+      throw new Error("Registration failed");
     }
   };
 
