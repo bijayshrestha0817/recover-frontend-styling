@@ -117,7 +117,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       await loadUser();
-    } catch (error:unknown) {
+    } catch (error: unknown) {
+      console.log(error)
       throw new Error("Invalid username or password");
     }
   };
