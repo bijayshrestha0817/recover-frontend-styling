@@ -94,7 +94,7 @@ const LoginForm = () => {
 
           <Group justify="space-between" mt="lg">
             <Checkbox label="Remember me" />
-            <Anchor component="button" size="sm">
+            <Anchor href="/forgot-password" size="sm">
               Forgot password?
             </Anchor>
           </Group>
