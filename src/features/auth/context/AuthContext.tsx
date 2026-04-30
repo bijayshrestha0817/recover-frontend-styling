@@ -1,6 +1,5 @@
 "use client";
 
-import type { User } from "@/types/IUser";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {
@@ -10,6 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import type { User } from "@/types/IUser";
 import type { AuthContextType } from "../types/AuthContextType";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
 
         return Promise.reject(error);
-      }
+      },
     );
 
     return () => {
@@ -117,10 +117,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       await loadUser();
-    } catch (error) {
-      {
-        throw new Error("Invalid username or password");
-      }
+    } catch (error:unknown) {
+      throw new Error("Invalid username or password");
     }
   };
 
@@ -139,7 +137,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = async (
     username: string,
     email: string,
-    password: string
+    password: string,
   ) => {
     try {
       const response = await api.post("/register/", {
