@@ -1,12 +1,14 @@
-import { MantineProvider, mantineHtmlProps } from "@mantine/core";
-import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import LoaderComponent from "@/components/common/LoaderComponent";
 import { Header } from "@/components/layouts/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { theme } from "@/constants/theme";
 import { AuthProvider } from "@/features/auth/context/AuthContext";
 import { cn } from "@/lib/utils";
 import QueryProvider from "@/providers/QueryProvider";
+import { MantineProvider, mantineHtmlProps } from "@mantine/core";
+import type { Metadata } from "next";
+import { Geist } from "next/font/google";
+import { Suspense } from "react";
 import "../styles/globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -32,10 +34,12 @@ export default function RootLayout({
           <QueryProvider>
             <MantineProvider theme={theme}>
               <Header />
-              <main style={{ paddingTop: "56px" }}>
-                {children}
-                <Toaster richColors />
-              </main>
+              <Suspense fallback={<LoaderComponent />}>
+                <main style={{ paddingTop: "56px" }}>
+                  {children}
+                  <Toaster richColors />
+                </main>
+              </Suspense>
             </MantineProvider>
           </QueryProvider>
         </AuthProvider>

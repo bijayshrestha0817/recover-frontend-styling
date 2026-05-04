@@ -1,5 +1,7 @@
 "use client";
 
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import {
   Button,
   Container,
@@ -10,10 +12,8 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { AuthService } from "@/features/auth/services/authAPI";
-import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ResetPassword.module.css";
 
 const { forgotPasswordConfirm } = AuthService();
@@ -57,42 +57,40 @@ const ResetPassword = () => {
   };
 
   return (
-    <Suspense>
-      <Container size={460} my={30}>
-        <Title className={classes.title} ta="center">
-          Reset your password?
-        </Title>
+    <Container size={460} my={30}>
+      <Title className={classes.title} ta="center">
+        Reset your password?
+      </Title>
 
-        {error && (
-          <Notification color="red" mt="md">
-            {error}
-          </Notification>
-        )}
+      {error && (
+        <Notification color="red" mt="md">
+          {error}
+        </Notification>
+      )}
 
-        <Paper withBorder shadow="sm" p={22} mt={30} radius="md">
-          <form onSubmit={form.onSubmit(onSubmit)}>
-            <PasswordInput
-              label="New Password"
-              placeholder="Enter new password"
-              required
-              mt="md"
-              radius="md"
-              {...form.getInputProps("new_password")}
-            />
+      <Paper withBorder shadow="sm" p={22} mt={30} radius="md">
+        <form onSubmit={form.onSubmit(onSubmit)}>
+          <PasswordInput
+            label="New Password"
+            placeholder="Enter new password"
+            required
+            mt="md"
+            radius="md"
+            {...form.getInputProps("new_password")}
+          />
 
-            <Button
-              type="submit"
-              fullWidth
-              mt="xl"
-              radius="md"
-              loading={loading}
-            >
-              Confirm Password
-            </Button>
-          </form>
-        </Paper>
-      </Container>
-    </Suspense>
-  );
+          <Button
+            type="submit"
+            fullWidth
+            mt="xl"
+            radius="md"
+            loading={loading}
+          >
+            Confirm Password
+          </Button>
+        </form>
+      </Paper>
+    </Container>
+  )
 };
 export default ResetPassword;
