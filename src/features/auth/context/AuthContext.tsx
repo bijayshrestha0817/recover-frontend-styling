@@ -1,5 +1,7 @@
 "use client";
 
+import { NormalizedApiError } from "@/lib/error";
+import type { User } from "@/types/IUser";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {
@@ -9,7 +11,6 @@ import {
   useEffect,
   useState,
 } from "react";
-import type { User } from "@/types/IUser";
 import type { AuthContextType } from "../types/AuthContextType";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -117,8 +118,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       await loadUser();
-    } catch (error: unknown) {
-      throw new Error("Invalid username or password");
+    } catch (err: unknown) {
+      const error = err as Error & NormalizedApiError
+      throw new Error(error.message);
     }
   };
 
