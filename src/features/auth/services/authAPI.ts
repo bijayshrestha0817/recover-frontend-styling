@@ -29,7 +29,9 @@ const changePassword = (current_password: string, new_password: string) => {
 
 const forgotPassword = (email: string) => {
   return handleApi(
-    AUTH_URL.post({ email }, "/auth/reset-password/").json<ApiResponse<ForgotPassword>>(),
+    AUTH_URL.post({ email }, "/auth/reset-password/").json<
+      ApiResponse<ForgotPassword>
+    >(),
   );
 };
 

@@ -1,3 +1,7 @@
+import { MantineProvider, mantineHtmlProps } from "@mantine/core";
+import type { Metadata } from "next";
+import { Geist } from "next/font/google";
+import { Suspense } from "react";
 import LoaderComponent from "@/components/common/LoaderComponent";
 import { Header } from "@/components/layouts/Header";
 import { Toaster } from "@/components/ui/sonner";
@@ -5,10 +9,6 @@ import { theme } from "@/constants/theme";
 import { AuthProvider } from "@/features/auth/context/AuthContext";
 import { cn } from "@/lib/utils";
 import QueryProvider from "@/providers/QueryProvider";
-import { MantineProvider, mantineHtmlProps } from "@mantine/core";
-import type { Metadata } from "next";
-import { Geist } from "next/font/google";
-import { Suspense } from "react";
 import "../styles/globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });

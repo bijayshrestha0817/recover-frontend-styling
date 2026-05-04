@@ -1,7 +1,5 @@
 "use client";
 
-import { AuthService } from "@/features/auth/services/authAPI";
-import type { NormalizedApiError } from "@/lib/error";
 import {
   Button,
   Container,
@@ -14,6 +12,8 @@ import { useForm } from "@mantine/form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ResetPassword.module.css";
 
 const { forgotPasswordConfirm } = AuthService();
@@ -79,18 +79,12 @@ const ResetPassword = () => {
             {...form.getInputProps("new_password")}
           />
 
-          <Button
-            type="submit"
-            fullWidth
-            mt="xl"
-            radius="md"
-            loading={loading}
-          >
+          <Button type="submit" fullWidth mt="xl" radius="md" loading={loading}>
             Confirm Password
           </Button>
         </form>
       </Paper>
     </Container>
-  )
+  );
 };
 export default ResetPassword;
