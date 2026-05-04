@@ -1,7 +1,5 @@
 "use client";
 
-import { AuthService } from "@/features/auth/services/authAPI";
-import { NormalizedApiError } from "@/lib/error";
 import {
   Anchor,
   Box,
@@ -19,6 +17,8 @@ import { useForm } from "@mantine/form";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ForgotPassword.module.css";
 
 const { forgotPassword } = AuthService();
@@ -26,7 +26,6 @@ const { forgotPassword } = AuthService();
 export default function ForgotPassword() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
 
   const form = useForm<{
     email: string;
@@ -44,10 +43,8 @@ export default function ForgotPassword() {
       toast.success("Reset link sent to your email!");
       form.reset();
     } catch (err: unknown) {
-
-      const error = err as Error & NormalizedApiError
+      const error = err as Error & NormalizedApiError;
       setError(error.message);
-
     } finally {
       setLoading(false);
     }
@@ -62,7 +59,6 @@ export default function ForgotPassword() {
       <Text c="dimmed" fz="sm" ta="center">
         Enter your email to get a reset link
       </Text>
-
 
       {error && (
         <Notification color="red" mt="md">

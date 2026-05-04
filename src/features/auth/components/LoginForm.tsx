@@ -1,6 +1,5 @@
 "use client";
 
-import { NormalizedApiError } from "@/lib/error";
 import {
   Anchor,
   Button,
@@ -18,6 +17,7 @@ import { useForm } from "@mantine/form";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/AuthenticationTitle.module.css";
 import { useAuth } from "../context/AuthContext";
 
@@ -50,8 +50,8 @@ const LoginForm = () => {
       await login(values.username, values.password);
       window.location.href = redirectTo;
     } catch (err: unknown) {
-      const error = err as Error & NormalizedApiError
-      setError(error.message)
+      const error = err as Error & NormalizedApiError;
+      setError(error.message);
     } finally {
       setLoading(false);
     }

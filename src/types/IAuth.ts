@@ -1,12 +1,12 @@
 export type ForgotPassword = {
-    email: string;
+  email: string;
 };
 
 export type ChangePasswordResponse = {
-    code: string
-    data: string | null
-    errors: string | null
-    message: string
-    status: number
-    success: boolean
-}
+  code: string;
+  data: string | null;
+  errors: string | null;
+  message: string;
+  status: number;
+  success: boolean;
+};

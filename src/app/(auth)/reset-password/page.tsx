@@ -1,8 +1,5 @@
-
 "use client";
 
-import { AuthService } from "@/features/auth/services/authAPI";
-import { NormalizedApiError } from "@/lib/error";
 import {
   Button,
   Container,
@@ -15,13 +12,13 @@ import { useForm } from "@mantine/form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ResetPassword.module.css";
 
 const { forgotPasswordConfirm } = AuthService();
 
-
 const ResetPassword = () => {
-
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -29,7 +26,7 @@ const ResetPassword = () => {
   const token = searchParams.get("token");
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm({
     initialValues: {
@@ -48,24 +45,19 @@ const ResetPassword = () => {
 
       await forgotPasswordConfirm(uid, token, values.new_password);
 
-
       toast.success("Password reset successfully!");
 
       router.push("/login");
     } catch (err: unknown) {
-      const error = err as Error & NormalizedApiError
+      const error = err as Error & NormalizedApiError;
       setError(error.message);
-
     } finally {
       setLoading(false);
     }
   };
 
   return (
-
     <Suspense>
-
-
       <Container size={460} my={30}>
         <Title className={classes.title} ta="center">
           Reset your password?
@@ -88,14 +80,19 @@ const ResetPassword = () => {
               {...form.getInputProps("new_password")}
             />
 
-            <Button type="submit" fullWidth mt="xl" radius="md" loading={loading}>
+            <Button
+              type="submit"
+              fullWidth
+              mt="xl"
+              radius="md"
+              loading={loading}
+            >
               Confirm Password
             </Button>
           </form>
         </Paper>
       </Container>
     </Suspense>
-
   );
-}
+};
 export default ResetPassword;

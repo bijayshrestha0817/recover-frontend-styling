@@ -1,8 +1,8 @@
-import { handleApi } from "@/lib/error";
-import { ApiResponse } from "@/types/IApiResponse";
-import { ChangePasswordResponse, ForgotPassword } from "@/types/IAuth";
 import Cookies from "js-cookie";
 import wretch from "wretch";
+import { handleApi } from "@/lib/error";
+import type { ApiResponse } from "@/types/IApiResponse";
+import type { ChangePasswordResponse, ForgotPassword } from "@/types/IAuth";
 
 const API_AUTH_URL = process.env.NEXT_PUBLIC_DJANGO_AUTH_API_URL;
 
@@ -22,18 +22,17 @@ const getAuth = () => {
 const changePassword = (current_password: string, new_password: string) => {
   return handleApi(
     getAuth()
-      .put(
-        { current_password, new_password },
-        "/auth/change-password/",
-      )
-      .json<ApiResponse<ChangePasswordResponse>>()
+      .put({ current_password, new_password }, "/auth/change-password/")
+      .json<ApiResponse<ChangePasswordResponse>>(),
   );
 };
 
 const forgotPassword = (email: string) => {
   return handleApi(
-    AUTH_URL.post({ email }, "/auth/reset-password/").json<ApiResponse<ForgotPassword>>()
-  )
+    AUTH_URL.post({ email }, "/auth/reset-password/").json<
+      ApiResponse<ForgotPassword>
+    >(),
+  );
 };
 
 const forgotPasswordConfirm = (

@@ -1,6 +1,4 @@
 "use client";
-import { AuthService } from "@/features/auth/services/authAPI";
-import { NormalizedApiError } from "@/lib/error";
 import {
   Button,
   Container,
@@ -13,6 +11,8 @@ import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ResetPassword.module.css";
 
 const { changePassword } = AuthService();
@@ -35,7 +35,7 @@ export default function ChangePassword() {
     try {
       const res = await changePassword(
         values.current_password,
-        values.new_password
+        values.new_password,
       );
       toast.success(res.message);
       router.push("/dashboard");
