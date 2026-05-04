@@ -1,3 +1,6 @@
+import { handleApi } from "@/lib/error";
+import { ApiResponse } from "@/types/IApiResponse";
+import { ChangePasswordResponse, ForgotPassword } from "@/types/IAuth";
 import Cookies from "js-cookie";
 import wretch from "wretch";
 
@@ -17,14 +20,20 @@ const getAuth = () => {
 };
 
 const changePassword = (current_password: string, new_password: string) => {
-  return getAuth().put(
-    { current_password, new_password },
-    "/auth/change-password/",
+  return handleApi(
+    getAuth()
+      .put(
+        { current_password, new_password },
+        "/auth/change-password/",
+      )
+      .json<ApiResponse<ChangePasswordResponse>>()
   );
 };
 
 const forgotPassword = (email: string) => {
-  return AUTH_URL.post({ email }, "/auth/reset-password/");
+  return handleApi(
+    AUTH_URL.post({ email }, "/auth/reset-password/").json<ApiResponse<ForgotPassword>>()
+  )
 };
 
 const forgotPasswordConfirm = (
@@ -34,7 +43,7 @@ const forgotPasswordConfirm = (
 ) => {
   return AUTH_URL.post(
     { uid, token, new_password },
-    "/auth/forgot-password-confirm/",
+    "/auth/reset-password-confirm/",
   );
 };
 

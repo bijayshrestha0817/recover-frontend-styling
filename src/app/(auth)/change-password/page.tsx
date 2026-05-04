@@ -1,4 +1,6 @@
 "use client";
+import { AuthService } from "@/features/auth/services/authAPI";
+import { NormalizedApiError } from "@/lib/error";
 import {
   Button,
   Container,
@@ -11,7 +13,6 @@ import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { AuthService } from "@/features/auth/services/authAPI";
 import classes from "../../../styles/ResetPassword.module.css";
 
 const { changePassword } = AuthService();
@@ -30,13 +31,17 @@ export default function ChangePassword() {
   const onSubmit = async (values: typeof form.values) => {
     setLoading(true);
     setError(null);
+
     try {
-      await changePassword(values.current_password, values.new_password);
-      toast.success("Password changed successfully!");
+      const res = await changePassword(
+        values.current_password,
+        values.new_password
+      );
+      toast.success(res.message);
       router.push("/dashboard");
-    } catch (err) {
-      console.error(err);
-      setError("Invalid password.");
+    } catch (err: unknown) {
+      const error = err as Error & NormalizedApiError;
+      setError(error.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -53,6 +58,7 @@ export default function ChangePassword() {
           {error}
         </Notification>
       )}
+
       <Paper withBorder shadow="sm" p={22} mt={30} radius="md">
         <form onSubmit={form.onSubmit(onSubmit)}>
           <PasswordInput

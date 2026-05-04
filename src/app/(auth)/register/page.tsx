@@ -1,5 +1,7 @@
 "use client";
 
+import { useAuth } from "@/features/auth/context/AuthContext";
+import { NormalizedApiError } from "@/lib/error";
 import {
   Button,
   Container,
@@ -14,7 +16,6 @@ import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "@/features/auth/context/AuthContext";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -46,15 +47,11 @@ export default function RegisterPage() {
       await register(values.username, values.email, values.password);
       toast.success("Registration successful! Please log in.");
       router.push("/login");
-    } catch (err) {
-      console.error(err);
-
-      if (err instanceof Response) {
-        const data = await err.json();
-        const errorMessages = Object.values(data).flat().join(" ");
-        setError(errorMessages);
-      }
-    } finally {
+    } catch (err: unknown) {
+      const error = err as Error & NormalizedApiError
+      setError(error.message)
+    }
+    finally {
       setLoading(false);
     }
   };

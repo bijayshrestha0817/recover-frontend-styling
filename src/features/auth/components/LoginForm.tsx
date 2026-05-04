@@ -1,5 +1,6 @@
 "use client";
 
+import { NormalizedApiError } from "@/lib/error";
 import {
   Anchor,
   Button,
@@ -48,9 +49,9 @@ const LoginForm = () => {
     try {
       await login(values.username, values.password);
       window.location.href = redirectTo;
-    } catch (err) {
-      console.error(err);
-      setError("Invalid username or password.");
+    } catch (err: unknown) {
+      const error = err as Error & NormalizedApiError
+      setError(error.message)
     } finally {
       setLoading(false);
     }
