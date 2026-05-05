@@ -1,5 +1,7 @@
 "use client";
 
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import {
   Anchor,
   Box,
@@ -7,25 +9,23 @@ import {
   Center,
   Container,
   Group,
-  Notification,
   Paper,
   Text,
   TextInput,
-  Title,
+  Title
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { AuthService } from "@/features/auth/services/authAPI";
-import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ForgotPassword.module.css";
 
 const { forgotPassword } = AuthService();
 
 export default function ForgotPassword() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter()
 
   const form = useForm<{
     email: string;
@@ -39,12 +39,12 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      await forgotPassword(values.email);
-      toast.success("Reset link sent to your email!");
-      form.reset();
+      const res = await forgotPassword(values.email);
+      router.push("/")
+      toast.success(res.message);
     } catch (err: unknown) {
       const error = err as Error & NormalizedApiError;
-      setError(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -59,12 +59,6 @@ export default function ForgotPassword() {
       <Text c="dimmed" fz="sm" ta="center">
         Enter your email to get a reset link
       </Text>
-
-      {error && (
-        <Notification color="red" mt="md">
-          {error}
-        </Notification>
-      )}
 
       <Paper withBorder shadow="md" p={30} radius="md" mt="xl">
         <form onSubmit={form.onSubmit(onSubmit)}>

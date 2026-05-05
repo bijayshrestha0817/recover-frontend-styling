@@ -1,26 +1,24 @@
 "use client";
 
+import { useAuth } from "@/features/auth/context/AuthContext";
+import type { NormalizedApiError } from "@/lib/error";
 import {
   Button,
   Container,
   Group,
-  Notification,
   Paper,
   PasswordInput,
   TextInput,
-  Title,
+  Title
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "@/features/auth/context/AuthContext";
-import type { NormalizedApiError } from "@/lib/error";
 
 export default function RegisterPage() {
   const { register } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm({
     initialValues: {
@@ -41,7 +39,6 @@ export default function RegisterPage() {
   const router = useRouter();
   const onSubmit = async (values: typeof form.values) => {
     setLoading(true);
-    setError(null);
 
     try {
       await register(values.username, values.email, values.password);
@@ -49,7 +46,7 @@ export default function RegisterPage() {
       router.push("/login");
     } catch (err: unknown) {
       const error = err as Error & NormalizedApiError;
-      setError(error.message);
+      toast.error(error.message)
     } finally {
       setLoading(false);
     }
@@ -58,12 +55,6 @@ export default function RegisterPage() {
   return (
     <Container size={420} my={40}>
       <Title>Create a new account</Title>
-
-      {error && (
-        <Notification color="red" mt="md">
-          {error}
-        </Notification>
-      )}
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <form onSubmit={form.onSubmit(onSubmit)}>

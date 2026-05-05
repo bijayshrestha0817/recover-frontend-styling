@@ -1,8 +1,8 @@
-import Cookies from "js-cookie";
-import wretch from "wretch";
 import { handleApi } from "@/lib/error";
 import type { ApiResponse } from "@/types/IApiResponse";
-import type { ChangePasswordResponse, ForgotPassword } from "@/types/IAuth";
+import type { ChangePasswordResponse, ForgotPassword, ForgotPasswordConfirmResponse } from "@/types/IAuth";
+import Cookies from "js-cookie";
+import wretch from "wretch";
 
 const API_AUTH_URL = process.env.NEXT_PUBLIC_DJANGO_AUTH_API_URL;
 
@@ -40,10 +40,8 @@ const forgotPasswordConfirm = (
   token: string,
   new_password: string,
 ) => {
-  return AUTH_URL.post(
-    { uid, token, new_password },
-    "/auth/reset-password-confirm/",
-  );
+  return handleApi(AUTH_URL.post({ uid, token, new_password }, "/auth/reset-password-confirm/").json<ApiResponse<ForgotPasswordConfirmResponse>>()
+  )
 };
 
 export const AuthService = () => {

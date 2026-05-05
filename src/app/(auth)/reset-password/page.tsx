@@ -1,9 +1,10 @@
 "use client";
 
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import {
   Button,
   Container,
-  Notification,
   Paper,
   PasswordInput,
   Title,
@@ -12,8 +13,6 @@ import { useForm } from "@mantine/form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { AuthService } from "@/features/auth/services/authAPI";
-import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ResetPassword.module.css";
 
 const { forgotPasswordConfirm } = AuthService();
@@ -26,7 +25,6 @@ const ResetPassword = () => {
   const token = searchParams.get("token");
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm({
     initialValues: {
@@ -43,14 +41,14 @@ const ResetPassword = () => {
         return;
       }
 
-      await forgotPasswordConfirm(uid, token, values.new_password);
+      const res = await forgotPasswordConfirm(uid, token, values.new_password);
 
-      toast.success("Password reset successfully!");
+      toast.success(res.message);
 
       router.push("/login");
     } catch (err: unknown) {
       const error = err as Error & NormalizedApiError;
-      setError(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -62,11 +60,6 @@ const ResetPassword = () => {
         Reset your password?
       </Title>
 
-      {error && (
-        <Notification color="red" mt="md">
-          {error}
-        </Notification>
-      )}
 
       <Paper withBorder shadow="sm" p={22} mt={30} radius="md">
         <form onSubmit={form.onSubmit(onSubmit)}>

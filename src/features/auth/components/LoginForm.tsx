@@ -3,28 +3,25 @@
 import {
   Anchor,
   Button,
-  Checkbox,
   Container,
   Group,
-  Notification,
   Paper,
   PasswordInput,
   Text,
   TextInput,
-  Title,
+  Title
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import type { NormalizedApiError } from "@/lib/error";
+import { toast } from "sonner";
 import classes from "../../../styles/AuthenticationTitle.module.css";
 import { useAuth } from "../context/AuthContext";
 
 const LoginForm = () => {
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm({
     initialValues: {
@@ -44,14 +41,13 @@ const LoginForm = () => {
 
   const onSubmit = async (values: typeof form.values) => {
     setLoading(true);
-    setError(null);
 
     try {
       await login(values.username, values.password);
       window.location.href = redirectTo;
+      toast.success("Logged in successfully!")
     } catch (err: unknown) {
-      const error = err as Error & NormalizedApiError;
-      setError(error.message);
+      toast.error("Invalid username or password.")
     } finally {
       setLoading(false);
     }
@@ -68,11 +64,6 @@ const LoginForm = () => {
         </Anchor>
       </Text>
 
-      {error && (
-        <Notification color="red" mt="md">
-          {error}
-        </Notification>
-      )}
 
       <Paper withBorder shadow="sm" p={22} mt={30} radius="md">
         <form onSubmit={form.onSubmit(onSubmit)}>
@@ -93,8 +84,8 @@ const LoginForm = () => {
             {...form.getInputProps("password")}
           />
 
-          <Group justify="space-between" mt="lg">
-            <Checkbox label="Remember me" />
+          <Group justify="end" mt="lg">
+            {/* <Checkbox label="Remember me" /> */}
             <Anchor href="/forgot-password" size="sm">
               Forgot password?
             </Anchor>

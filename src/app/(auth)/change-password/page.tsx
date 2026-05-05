@@ -1,26 +1,25 @@
 "use client";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import {
   Button,
   Container,
-  Notification,
   Paper,
   PasswordInput,
-  Title,
+  Title
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { AuthService } from "@/features/auth/services/authAPI";
-import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ResetPassword.module.css";
 
 const { changePassword } = AuthService();
 export default function ChangePassword() {
-  const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const { logout } = useAuth()
   const form = useForm({
     initialValues: {
       current_password: "",
@@ -30,7 +29,6 @@ export default function ChangePassword() {
 
   const onSubmit = async (values: typeof form.values) => {
     setLoading(true);
-    setError(null);
 
     try {
       const res = await changePassword(
@@ -38,10 +36,10 @@ export default function ChangePassword() {
         values.new_password,
       );
       toast.success(res.message);
-      router.push("/dashboard");
+      logout()
     } catch (err: unknown) {
       const error = err as Error & NormalizedApiError;
-      setError(error.message || "Something went wrong");
+      toast.error(error.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -52,12 +50,6 @@ export default function ChangePassword() {
       <Title className={classes.title} ta="center">
         Change your password?
       </Title>
-
-      {error && (
-        <Notification color="red" mt="md">
-          {error}
-        </Notification>
-      )}
 
       <Paper withBorder shadow="sm" p={22} mt={30} radius="md">
         <form onSubmit={form.onSubmit(onSubmit)}>
