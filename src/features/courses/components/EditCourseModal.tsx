@@ -34,12 +34,12 @@ export function EditCourseModal({
     mutationFn: UPDATE_COURSE,
     onSuccess: (updateCourse) => {
       queryClient.setQueryData(["courses"], (old: Course[] = []) =>
-        old.map((c) => (c.id === course?.id ? updateCourse : c)),
+        old.map((c) => (c.id === course?.id ? updateCourse.data : c)),
       );
 
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       resetForm();
-      toast.success(`Course "${updateCourse.data.name}" updated successfully!`);
+      toast.success(updateCourse.message);
       close();
     },
     onError: (err) => {

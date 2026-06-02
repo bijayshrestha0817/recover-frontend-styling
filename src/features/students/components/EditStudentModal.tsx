@@ -39,7 +39,9 @@ export default function EditStudentModal({
     mutationFn: UPDATE_STUDENT,
     onSuccess: (updateStudent) => {
       queryClient.setQueryData(["students"], (old: Student[] = []) =>
-        old.map((s) => (s.id === updateStudent.id ? updateStudent : s)),
+        old.map((s) =>
+          s.id === updateStudent.data.id ? updateStudent.data : s,
+        ),
       );
 
       queryClient.invalidateQueries({ queryKey: ["students"] });

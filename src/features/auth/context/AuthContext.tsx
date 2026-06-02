@@ -38,8 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      setUser(res.data);
+      setUser(res.data.data);
     } catch {
       setUser(null);
     } finally {

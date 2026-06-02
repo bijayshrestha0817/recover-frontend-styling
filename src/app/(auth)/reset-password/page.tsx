@@ -1,18 +1,12 @@
 "use client";
 
-import { AuthService } from "@/features/auth/services/authAPI";
-import type { NormalizedApiError } from "@/lib/error";
-import {
-  Button,
-  Container,
-  Paper,
-  PasswordInput,
-  Title,
-} from "@mantine/core";
+import { Button, Container, Paper, PasswordInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ResetPassword.module.css";
 
 const { forgotPasswordConfirm } = AuthService();
@@ -59,7 +53,6 @@ const ResetPassword = () => {
       <Title className={classes.title} ta="center">
         Reset your password?
       </Title>
-
 
       <Paper withBorder shadow="sm" p={22} mt={30} radius="md">
         <form onSubmit={form.onSubmit(onSubmit)}>

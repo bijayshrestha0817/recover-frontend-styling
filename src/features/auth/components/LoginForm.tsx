@@ -9,7 +9,7 @@ import {
   PasswordInput,
   Text,
   TextInput,
-  Title
+  Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import Link from "next/link";
@@ -45,9 +45,9 @@ const LoginForm = () => {
     try {
       await login(values.username, values.password);
       window.location.href = redirectTo;
-      toast.success("Logged in successfully!")
-    } catch (err: unknown) {
-      toast.error("Invalid username or password.")
+      toast.success("Logged in successfully!");
+    } catch {
+      toast.error("Invalid username or password.");
     } finally {
       setLoading(false);
     }
@@ -63,7 +63,6 @@ const LoginForm = () => {
           Create account
         </Anchor>
       </Text>
-
 
       <Paper withBorder shadow="sm" p={22} mt={30} radius="md">
         <form onSubmit={form.onSubmit(onSubmit)}>

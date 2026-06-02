@@ -1,7 +1,5 @@
 "use client";
 
-import { AuthService } from "@/features/auth/services/authAPI";
-import type { NormalizedApiError } from "@/lib/error";
 import {
   Anchor,
   Box,
@@ -12,20 +10,22 @@ import {
   Paper,
   Text,
   TextInput,
-  Title
+  Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ForgotPassword.module.css";
 
 const { forgotPassword } = AuthService();
 
 export default function ForgotPassword() {
   const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter()
+  const router = useRouter();
 
   const form = useForm<{
     email: string;
@@ -40,7 +40,7 @@ export default function ForgotPassword() {
 
     try {
       const res = await forgotPassword(values.email);
-      router.push("/")
+      router.push("/");
       toast.success(res.message);
     } catch (err: unknown) {
       const error = err as Error & NormalizedApiError;

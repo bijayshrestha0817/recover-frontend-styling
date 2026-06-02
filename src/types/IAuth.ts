@@ -17,5 +17,5 @@ export type ForgotPasswordConfirmResponse = {
   errors: string | null;
   message: string;
   status: number;
-  success: boolean; 
-}
+  success: boolean;
+};

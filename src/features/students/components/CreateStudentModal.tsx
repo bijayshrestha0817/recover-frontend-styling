@@ -29,7 +29,7 @@ export function CreateStudentModal({ opened, close }: CreateStudentModalProps) {
     mutationFn: POST_STUDENT,
     onSuccess: (storeStudent) => {
       queryClient.setQueryData(["students"], (old: Student[] = []) =>
-        old.map((s) => (s.id === storeStudent.id ? storeStudent : s)),
+        old.map((s) => (s.id === storeStudent.data.id ? storeStudent.data : s)),
       );
 
       queryClient.invalidateQueries({ queryKey: ["students"] });

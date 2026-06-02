@@ -25,13 +25,13 @@ export function CreateCourseModal({ opened, close }: CreateCourseModalProps) {
     mutationFn: POST_COURSE,
     onSuccess: (storeCourse) => {
       queryClient.setQueryData(["courses"], (old: Course[] = []) =>
-        old.map((c) => (c.id === storeCourse.id ? storeCourse : c)),
+        old.map((c) => (c.id === storeCourse.data.id ? storeCourse.data : c)),
       );
 
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       resetForm();
 
-      toast.success(`Course "${storeCourse.data.name}" created successfully!`);
+      toast.success(storeCourse.message);
       close();
     },
     onError: (error) => {

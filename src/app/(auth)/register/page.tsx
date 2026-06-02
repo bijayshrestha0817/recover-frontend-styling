@@ -1,7 +1,5 @@
 "use client";
 
-import { useAuth } from "@/features/auth/context/AuthContext";
-import type { NormalizedApiError } from "@/lib/error";
 import {
   Button,
   Container,
@@ -9,12 +7,14 @@ import {
   Paper,
   PasswordInput,
   TextInput,
-  Title
+  Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import type { NormalizedApiError } from "@/lib/error";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -46,7 +46,7 @@ export default function RegisterPage() {
       router.push("/login");
     } catch (err: unknown) {
       const error = err as Error & NormalizedApiError;
-      toast.error(error.message)
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }

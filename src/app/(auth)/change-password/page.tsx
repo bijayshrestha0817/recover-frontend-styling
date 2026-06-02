@@ -1,25 +1,18 @@
 "use client";
-import { useAuth } from "@/features/auth/context/AuthContext";
-import { AuthService } from "@/features/auth/services/authAPI";
-import type { NormalizedApiError } from "@/lib/error";
-import {
-  Button,
-  Container,
-  Paper,
-  PasswordInput,
-  Title
-} from "@mantine/core";
+import { Button, Container, Paper, PasswordInput, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import { AuthService } from "@/features/auth/services/authAPI";
+import type { NormalizedApiError } from "@/lib/error";
 import classes from "../../../styles/ResetPassword.module.css";
 
 const { changePassword } = AuthService();
 export default function ChangePassword() {
-
   const [loading, setLoading] = useState(false);
 
-  const { logout } = useAuth()
+  const { logout } = useAuth();
   const form = useForm({
     initialValues: {
       current_password: "",
@@ -36,7 +29,7 @@ export default function ChangePassword() {
         values.new_password,
       );
       toast.success(res.message);
-      logout()
+      logout();
     } catch (err: unknown) {
       const error = err as Error & NormalizedApiError;
       toast.error(error.message || "Something went wrong");
