@@ -1,6 +1,8 @@
 import { MantineProvider, mantineHtmlProps } from "@mantine/core";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { Suspense } from "react";
+import LoaderComponent from "@/components/common/LoaderComponent";
 import { Header } from "@/components/layouts/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { theme } from "@/constants/theme";
@@ -32,10 +34,12 @@ export default function RootLayout({
           <QueryProvider>
             <MantineProvider theme={theme}>
               <Header />
-              <main style={{ paddingTop: "56px" }}>
-                {children}
-                <Toaster richColors />
-              </main>
+              <Suspense fallback={<LoaderComponent />}>
+                <main style={{ paddingTop: "56px" }}>
+                  {children}
+                  <Toaster richColors />
+                </main>
+              </Suspense>
             </MantineProvider>
           </QueryProvider>
         </AuthProvider>

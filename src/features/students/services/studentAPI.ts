@@ -1,20 +1,16 @@
-import wretch from "wretch";
+import { handleApi } from "@/lib/error";
+import { apiClient } from "@/lib/http/client";
+import { listOrEmpty } from "@/lib/http/list";
 import type { ApiResponse } from "@/types/IApiResponse";
+import type { CourseDropdownResponse } from "@/types/ICourse";
 import type { Student, StudentList } from "@/types/IStudent";
-import { handleApi } from "../../../lib/error";
-import type { CourseDropdownResponse } from "../../../types/ICourse";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_DJANGO_API_URL;
-
-const API_URL = wretch(API_BASE_URL)
-  .accept("application/json")
-  .content("application/json");
 
 const GET_STUDENTS = (page: number) => {
-  return handleApi(
-    API_URL.url(`/students/?page=${page}`)
-      .get()
-      .json<ApiResponse<StudentList>>(),
+  return listOrEmpty(
+    handleApi(
+      apiClient.get<ApiResponse<StudentList>>(`/students/?page=${page}`),
+    ),
+    "No Student Found",
   );
 };
 
@@ -24,9 +20,7 @@ const POST_STUDENT = (data: {
   age: number;
   course: string;
 }) => {
-  return handleApi(
-    API_URL.url("/students/").post(data).json<ApiResponse<Student>>(),
-  );
+  return handleApi(apiClient.post<ApiResponse<Student>>("/students/", data));
 };
 
 const UPDATE_STUDENT = (data: {
@@ -37,18 +31,16 @@ const UPDATE_STUDENT = (data: {
   course: string;
 }) => {
   return handleApi(
-    API_URL.url(`/students/${data.id}/`).put(data).json<Student>(),
+    apiClient.put<ApiResponse<Student>>(`/students/${data.id}/`, data),
   );
 };
 
 const DELETE_STUDENT = (data: { id: number }) => {
-  return handleApi(API_URL.url(`/students/${data.id}/`).delete().res());
+  return handleApi(apiClient.delete(`/students/${data.id}/`));
 };
 
 const GET_COURSES_FOR_STUDENT = () => {
-  return handleApi(
-    API_URL.url(`/courses/all/`).get().json<CourseDropdownResponse>(),
-  );
+  return handleApi(apiClient.get<CourseDropdownResponse>(`/courses/all/`));
 };
 
 export const StudentService = () => {

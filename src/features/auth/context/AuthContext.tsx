@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import Cookies from "js-cookie";
 import {
   createContext,
@@ -9,14 +8,12 @@ import {
   useEffect,
   useState,
 } from "react";
+import { handleApi, type NormalizedApiError } from "@/lib/error";
+import { authClient } from "@/lib/http/client";
 import type { User } from "@/types/IUser";
 import type { AuthContextType } from "../types/AuthContextType";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_DJANGO_AUTH_API_URL,
-});
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -32,15 +29,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     try {
-      const res = await api.get("/auth/me/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setUser(res.data);
-    } catch (error: unknown) {
-      console.log(error);
+      // authClient attaches the Bearer token and handles refresh-on-401 centrally.
+      const res = await authClient.get("/auth/me/");
+      setUser(res.data.data);
+    } catch {
       setUser(null);
     } finally {
       setLoading(false);
@@ -48,21 +40,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const login = async (username: string, password: string) => {
-    const res = await api.post("/auth/token/", {
-      username,
-      password,
-    });
+    try {
+      const res = await authClient.post("/auth/token/", {
+        username,
+        password,
+      });
 
-    Cookies.set("access_token", res.data.access);
-    Cookies.set("refresh_token", res.data.refresh);
+      Cookies.set("access_token", res.data.access, {
+        secure: true,
+        sameSite: "strict",
+        expires: 1,
+      });
 
-    await loadUser();
+      Cookies.set("refresh_token", res.data.refresh, {
+        secure: true,
+        sameSite: "strict",
+        expires: 7,
+      });
+
+      await loadUser();
+    } catch (err: unknown) {
+      const error = err as Error & NormalizedApiError;
+      throw new Error(error.message);
+    }
   };
 
-  const logout = () => {
-    Cookies.remove("access_token");
-    Cookies.remove("refresh_token");
-    setUser(null);
+  const logout = async () => {
+    try {
+      const refresh = Cookies.get("refresh_token");
+      await authClient.post("/auth/logout/", { refresh });
+    } finally {
+      Cookies.remove("access_token");
+      Cookies.remove("refresh_token");
+      setUser(null);
+      window.location.href = "/login";
+    }
   };
 
   const register = async (
@@ -70,21 +82,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     email: string,
     password: string,
   ) => {
-    try {
-      const response = await api.post("/register/", {
-        username,
-        email,
-        password,
-      });
-
-      return response.data;
-    } catch (error: unknown) {
-      console.error("Register failed:", error);
-
-      throw {
-        message: "Registration failed",
-      };
-    }
+    return handleApi(
+      authClient.post("/register/", { username, email, password }),
+    );
   };
 
   useEffect(() => {

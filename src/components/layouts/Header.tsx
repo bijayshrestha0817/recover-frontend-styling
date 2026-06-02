@@ -72,6 +72,12 @@ export function Header() {
               </Link>
             </Menu.Item>
 
+            <Menu.Item>
+              <Link href="/change-password" className={classes.link}>
+                Change Password
+              </Link>
+            </Menu.Item>
+
             <Menu.Item color="red" onClick={handleLogout}>
               Logout
             </Menu.Item>

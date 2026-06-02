@@ -1,43 +1,46 @@
-import wretch from "wretch";
+import { handleApi } from "@/lib/error";
+import { authClient } from "@/lib/http/client";
+import type { ApiResponse } from "@/types/IApiResponse";
+import type {
+  ChangePasswordResponse,
+  ForgotPassword,
+  ForgotPasswordConfirmResponse,
+} from "@/types/IAuth";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_DJANGO_API_URL;
-
-const API_AUTH_URL = process.env.NEXT_PUBLIC_DJANGO_AUTH_API_URL;
-
-const API_URL = wretch(API_BASE_URL)
-  .accept("application/json")
-  .content("application/json");
-
-const AUTH_URL = wretch(API_AUTH_URL)
-  .accept("application/json")
-  .content("application/json");
-
-const register = (email: string, username: string, password: string) => {
-  return API_URL.post({ email, username, password }, "/auth/users/");
+const changePassword = (current_password: string, new_password: string) => {
+  return handleApi(
+    authClient.put<ApiResponse<ChangePasswordResponse>>(
+      "/auth/change-password/",
+      { current_password, new_password },
+    ),
+  );
 };
 
-const login = (username: string, password: string) => {
-  return AUTH_URL.post({ username: username, password }, "/auth/token/");
+const forgotPassword = (email: string) => {
+  return handleApi(
+    authClient.post<ApiResponse<ForgotPassword>>("/auth/reset-password/", {
+      email,
+    }),
+  );
 };
 
-const handleJWTRefresh = (refreshToken: string) => {
-  return AUTH_URL.post({ refresh: refreshToken }, "/auth/token/refresh/");
-};
-
-const getToken = (key: "access" | "refresh") => {
-  return localStorage.getItem(key);
-};
-
-const storeToken = (token: string, key: "access" | "refresh") => {
-  localStorage.setItem(key, token);
+const forgotPasswordConfirm = (
+  uid: string,
+  token: string,
+  new_password: string,
+) => {
+  return handleApi(
+    authClient.post<ApiResponse<ForgotPasswordConfirmResponse>>(
+      "/auth/reset-password-confirm/",
+      { uid, token, new_password },
+    ),
+  );
 };
 
 export const AuthService = () => {
   return {
-    login,
-    register,
-    handleJWTRefresh,
-    getToken,
-    storeToken,
+    changePassword,
+    forgotPassword,
+    forgotPasswordConfirm,
   };
 };

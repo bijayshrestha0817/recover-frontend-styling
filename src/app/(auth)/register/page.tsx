@@ -4,7 +4,6 @@ import {
   Button,
   Container,
   Group,
-  Notification,
   Paper,
   PasswordInput,
   TextInput,
@@ -15,11 +14,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/features/auth/context/AuthContext";
+import type { NormalizedApiError } from "@/lib/error";
 
 export default function RegisterPage() {
   const { register } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm({
     initialValues: {
@@ -40,20 +39,14 @@ export default function RegisterPage() {
   const router = useRouter();
   const onSubmit = async (values: typeof form.values) => {
     setLoading(true);
-    setError(null);
 
     try {
       await register(values.username, values.email, values.password);
       toast.success("Registration successful! Please log in.");
       router.push("/login");
-    } catch (err) {
-      console.error(err);
-
-      if (err instanceof Response) {
-        const data = await err.json();
-        const errorMessages = Object.values(data).flat().join(" ");
-        setError(errorMessages);
-      }
+    } catch (err: unknown) {
+      const error = err as Error & NormalizedApiError;
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -62,12 +55,6 @@ export default function RegisterPage() {
   return (
     <Container size={420} my={40}>
       <Title>Create a new account</Title>
-
-      {error && (
-        <Notification color="red" mt="md">
-          {error}
-        </Notification>
-      )}
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <form onSubmit={form.onSubmit(onSubmit)}>
