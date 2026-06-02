@@ -1,7 +1,6 @@
 import { Button, Modal, Stack } from "@mantine/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Course } from "@/types/ICourse";
 import { CourseFormProvider } from "../hooks/FormContext";
 import { useCourseFormLogic } from "../hooks/useCourseFormLogic";
 import { CourseService } from "../services/coursesAPI";
@@ -24,10 +23,6 @@ export function CreateCourseModal({ opened, close }: CreateCourseModalProps) {
   const mutation = useMutation({
     mutationFn: POST_COURSE,
     onSuccess: (storeCourse) => {
-      queryClient.setQueryData(["courses"], (old: Course[] = []) =>
-        old.map((c) => (c.id === storeCourse.data.id ? storeCourse.data : c)),
-      );
-
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       resetForm();
 

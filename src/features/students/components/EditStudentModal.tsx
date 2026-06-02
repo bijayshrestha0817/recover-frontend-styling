@@ -37,13 +37,7 @@ export default function EditStudentModal({
 
   const mutation = useMutation({
     mutationFn: UPDATE_STUDENT,
-    onSuccess: (updateStudent) => {
-      queryClient.setQueryData(["students"], (old: Student[] = []) =>
-        old.map((s) =>
-          s.id === updateStudent.data.id ? updateStudent.data : s,
-        ),
-      );
-
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["students"] });
       resetForm();
       close();

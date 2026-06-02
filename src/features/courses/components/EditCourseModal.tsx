@@ -33,10 +33,6 @@ export function EditCourseModal({
   const mutation = useMutation({
     mutationFn: UPDATE_COURSE,
     onSuccess: (updateCourse) => {
-      queryClient.setQueryData(["courses"], (old: Course[] = []) =>
-        old.map((c) => (c.id === course?.id ? updateCourse.data : c)),
-      );
-
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       resetForm();
       toast.success(updateCourse.message);
