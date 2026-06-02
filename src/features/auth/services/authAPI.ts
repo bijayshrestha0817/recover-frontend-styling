@@ -1,6 +1,5 @@
-import Cookies from "js-cookie";
-import wretch from "wretch";
 import { handleApi } from "@/lib/error";
+import { authClient } from "@/lib/http/client";
 import type { ApiResponse } from "@/types/IApiResponse";
 import type {
   ChangePasswordResponse,
@@ -8,34 +7,20 @@ import type {
   ForgotPasswordConfirmResponse,
 } from "@/types/IAuth";
 
-const API_AUTH_URL = process.env.NEXT_PUBLIC_DJANGO_AUTH_API_URL;
-
-const AUTH_URL = wretch(API_AUTH_URL)
-  .accept("application/json")
-  .content("application/json");
-
-const getAuth = () => {
-  const token = Cookies.get("access_token");
-
-  return wretch(API_AUTH_URL)
-    .auth(`Bearer ${token}`)
-    .accept("application/json")
-    .content("application/json");
-};
-
 const changePassword = (current_password: string, new_password: string) => {
   return handleApi(
-    getAuth()
-      .put({ current_password, new_password }, "/auth/change-password/")
-      .json<ApiResponse<ChangePasswordResponse>>(),
+    authClient.put<ApiResponse<ChangePasswordResponse>>(
+      "/auth/change-password/",
+      { current_password, new_password },
+    ),
   );
 };
 
 const forgotPassword = (email: string) => {
   return handleApi(
-    AUTH_URL.post({ email }, "/auth/reset-password/").json<
-      ApiResponse<ForgotPassword>
-    >(),
+    authClient.post<ApiResponse<ForgotPassword>>("/auth/reset-password/", {
+      email,
+    }),
   );
 };
 
@@ -45,10 +30,10 @@ const forgotPasswordConfirm = (
   new_password: string,
 ) => {
   return handleApi(
-    AUTH_URL.post(
-      { uid, token, new_password },
+    authClient.post<ApiResponse<ForgotPasswordConfirmResponse>>(
       "/auth/reset-password-confirm/",
-    ).json<ApiResponse<ForgotPasswordConfirmResponse>>(),
+      { uid, token, new_password },
+    ),
   );
 };
 

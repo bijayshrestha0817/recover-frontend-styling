@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import Cookies from "js-cookie";
 import {
   createContext,
@@ -9,15 +8,12 @@ import {
   useEffect,
   useState,
 } from "react";
-import type { NormalizedApiError } from "@/lib/error";
+import { handleApi, type NormalizedApiError } from "@/lib/error";
+import { authClient } from "@/lib/http/client";
 import type { User } from "@/types/IUser";
 import type { AuthContextType } from "../types/AuthContextType";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_DJANGO_AUTH_API_URL,
-});
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -33,11 +29,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     try {
-      const res = await api.get("/auth/me/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // authClient attaches the Bearer token and handles refresh-on-401 centrally.
+      const res = await authClient.get("/auth/me/");
       setUser(res.data.data);
     } catch {
       setUser(null);
@@ -46,60 +39,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  useEffect(() => {
-    const interceptorId = api.interceptors.response.use(
-      (res) => res,
-      async (error) => {
-        const original = error.config;
-
-        if (original?.url?.includes("/auth/token/")) {
-          return Promise.reject(error);
-        }
-
-        if (error.response?.status === 401 && !original._retry) {
-          original._retry = true;
-
-          try {
-            const refresh = Cookies.get("refresh_token");
-
-            if (!refresh) {
-              throw new Error("No refresh token");
-            }
-
-            const { data } = await api.post("/auth/token/refresh/", {
-              refresh,
-            });
-
-            Cookies.set("access_token", data.access, {
-              secure: true,
-              sameSite: "strict",
-            });
-
-            original.headers.Authorization = `Bearer ${data.access}`;
-
-            return api(original);
-          } catch {
-            Cookies.remove("access_token");
-            Cookies.remove("refresh_token");
-
-            if (window.location.pathname !== "/login") {
-              window.location.href = "/login";
-            }
-          }
-        }
-
-        return Promise.reject(error);
-      },
-    );
-
-    return () => {
-      api.interceptors.response.eject(interceptorId);
-    };
-  }, []);
-
   const login = async (username: string, password: string) => {
     try {
-      const res = await api.post("/auth/token/", {
+      const res = await authClient.post("/auth/token/", {
         username,
         password,
       });
@@ -126,7 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     try {
       const refresh = Cookies.get("refresh_token");
-      await api.post("/auth/logout/", { refresh });
+      await authClient.post("/auth/logout/", { refresh });
     } finally {
       Cookies.remove("access_token");
       Cookies.remove("refresh_token");
@@ -140,17 +82,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     email: string,
     password: string,
   ) => {
-    try {
-      const response = await api.post("/register/", {
-        username,
-        email,
-        password,
-      });
-
-      return response.data;
-    } catch {
-      throw new Error("Registration failed");
-    }
+    return handleApi(
+      authClient.post("/register/", { username, email, password }),
+    );
   };
 
   useEffect(() => {

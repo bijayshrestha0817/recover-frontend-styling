@@ -5,9 +5,9 @@ type ApiErrorResponse = {
 };
 
 type ErrorShape = {
-  json?: ApiErrorResponse;
   response?: {
-    json?: ApiErrorResponse;
+    data?: ApiErrorResponse;
+    status?: number;
   };
   message?: string;
   status?: number;
@@ -48,7 +48,8 @@ export function extractApiMessage(error: unknown): string {
 
   const err = error as ErrorShape;
 
-  const json = err.json || err.response?.json;
+  // Axios stores the parsed response body on err.response.data.
+  const json = err.response?.data;
 
   if (json && typeof json === "object") {
     if (json.message || json.detail) {

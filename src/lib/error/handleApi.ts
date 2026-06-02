@@ -1,37 +1,38 @@
+import type { AxiosResponse } from "axios";
 import { extractApiMessage } from "./extractApiMessage";
 import type { NormalizedApiError } from "./types";
 
-type ErrorShape = {
-  json?: {
-    code?: string;
-    errors?: unknown;
-    [key: string]: unknown;
-  };
+type AxiosErrorShape = {
   response?: {
-    json?: {
+    data?: {
       code?: string;
       errors?: unknown;
       [key: string]: unknown;
     };
+    status?: number;
   };
-  status?: number;
 };
 
-export async function handleApi<T>(promise: Promise<T>): Promise<T> {
+// Unwraps an axios response to its body (`res.data`) and normalizes any error
+// into a NormalizedApiError carrying the backend message, code, status, and body.
+export async function handleApi<T>(
+  promise: Promise<AxiosResponse<T>>,
+): Promise<T> {
   try {
-    return await promise;
+    const res = await promise;
+    return res.data;
   } catch (error: unknown) {
-    const err = error as ErrorShape;
+    const err = error as AxiosErrorShape;
 
     const message = extractApiMessage(error);
 
     const apiError = new Error(message) as Error & NormalizedApiError;
 
-    const json = err.json || err.response?.json;
+    const data = err.response?.data;
 
-    apiError.code = json?.code;
-    apiError.status = err?.status;
-    apiError.errors = json;
+    apiError.code = data?.code;
+    apiError.status = err.response?.status;
+    apiError.errors = data;
 
     throw apiError;
   }
